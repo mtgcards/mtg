@@ -1,0 +1,19 @@
+name: Scheduled Deploy
+on:
+  schedule:
+    - cron: '0 3,15 * * *'  # JST 12:00（UTC 3:00）と JST 0:00（UTC 15:00）  
+  workflow_dispatch:       # 手動実行も可能
+
+jobs:
+  trigger-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trigger empty commit to redeploy
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git commit --allow-empty -m "chore: scheduled rebuild $(date -u)"
+          git push
