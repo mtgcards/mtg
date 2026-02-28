@@ -12,7 +12,7 @@ export default function PrivacyPage() {
       <div className="cobble-frame">
         <div className="cobble-inner">
           <h1>プライバシーポリシー</h1>
-          <p className="last-updated">最終更新日：2026年2月24日</p>
+          <p className="last-updated">最終更新日：2026年2月28日</p>
 
           <p>
             本サイト（以下「当サイト」）は、利用者のプライバシーを尊重し、個人情報の保護に努めます。
@@ -22,7 +22,7 @@ export default function PrivacyPage() {
           <h2>収集する情報</h2>
           <p>当サイトは以下の情報を収集する場合があります。</p>
           <ul>
-            <li>お問い合わせフォームにご入力いただいた氏名・メールアドレス・メッセージ内容</li>
+            <li>お問い合わせフォームにご入力いただいたメールアドレス・メッセージ内容</li>
             <li>アクセスログ（IPアドレス、ブラウザの種類、参照元URLなど）</li>
           </ul>
 
@@ -46,6 +46,7 @@ export default function PrivacyPage() {
           <ul>
             <li>Scryfall API（カードデータ・価格情報）</li>
             <li>Frankfurter API（為替レート）</li>
+            <li>Formspree（お問い合わせフォームの送信処理）</li>
             <li>Cloudflare Web Analytics（アクセス解析）</li>
           </ul>
 

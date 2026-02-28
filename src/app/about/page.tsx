@@ -78,28 +78,6 @@ export default function AboutPage() {
             本サイトの情報を利用したことによる損害について、当サイトは一切の責任を負いません。
           </p>
 
-          <h2>運営について</h2>
-          <p>
-            本サイトは個人が趣味で運営しています。
-            MTGのパウパー、レガシー、統率者、モダン、パイオニアフォーマットのFOILカードを集めるのが好きな昭和生まれが、
-            コモン・アンコモンの高額カードを手軽に調べるツールとして作成しました。
-          </p>
-
-          <h2>オープンソース</h2>
-          <p>
-            本サイトのソースコードはGitHubで公開しています。
-            バグ報告や改善提案はIssueにてお気軽にどうぞ。
-          </p>
-          <p>
-            <a
-              href="https://github.com/mtgcards/mtg"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              github.com/mtgcards/mtg
-            </a>
-          </p>
-
           <h2>よくある質問</h2>
           <dl className="faq-list">
             {FAQ_ITEMS.map((item) => (
@@ -113,6 +91,28 @@ export default function AboutPage() {
               </details>
             ))}
           </dl>
+
+          <h2>運営について</h2>
+          <p>
+            本サイトは個人が趣味で運営しています。
+            MTGのパウパー、レガシー、統率者、モダン、パイオニアフォーマットのFOILカードを集めるのが好きな昭和生まれが、
+            コモン・アンコモンの高額カードを手軽に調べるツールとして作成しました。
+          </p>
+
+          <h2>オープンソース</h2>
+          <p>
+            本サイトのソースコードはGitHubで公開しています。
+            バグ報告や改善提案はIssueか<Link href="/contact">お問い合わせ</Link>にてお気軽にどうぞ。
+          </p>
+          <p>
+            <a
+              href="https://github.com/mtgcards/mtg"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              github.com/mtgcards/mtg
+            </a>
+          </p>
 
           <Link href="/" className="back-link">
             ←<br />
