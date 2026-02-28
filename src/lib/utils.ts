@@ -1,4 +1,9 @@
 import { SerializedCard, FormatKey, Currency, Shop, ExchangeRates, ThresholdKey } from './types';
+import { ALL_FORMAT_KEYS } from './constants';
+
+export function isFormatKey(value: string): value is FormatKey {
+  return ALL_FORMAT_KEYS.includes(value as FormatKey);
+}
 
 export function getSetSectionId(setName: string): string {
   return 'set-' + setName.replace(/[^A-Za-z0-9]/g, '_');

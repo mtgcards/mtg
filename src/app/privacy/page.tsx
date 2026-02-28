@@ -46,17 +46,21 @@ export default function PrivacyPage() {
           <ul>
             <li>Scryfall API（カードデータ・価格情報）</li>
             <li>Frankfurter API（為替レート）</li>
-            <li>Google Fonts（フォント配信）</li>
+            <li>Cloudflare Web Analytics（アクセス解析）</li>
           </ul>
 
           <h2>Cookieについて</h2>
           <p>
             当サイトでは現在Cookieを使用していません。
-            ただし、Google Fontsなどの外部サービスがCookieを設定する場合があります。
+            アクセス解析にはCookie不使用のCloudflare Web Analyticsを採用しています。
           </p>
 
           <h2>アクセス解析</h2>
-          <p>当サイトでは現在、アクセス解析ツールを使用していません。</p>
+          <p>
+            当サイトではCloudflare Web Analyticsを使用しています。
+            このサービスはCookieを使用せず、個人を特定する情報を収集しません。
+            詳細は<a href="https://www.cloudflare.com/ja-jp/web-analytics/" target="_blank" rel="noopener noreferrer">Cloudflare Web Analytics</a>のページをご確認ください。
+          </p>
 
           <h2>プライバシーポリシーの変更</h2>
           <p>

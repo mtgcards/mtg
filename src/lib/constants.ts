@@ -41,8 +41,8 @@ export const FORMAT_DESCRIPTIONS: Record<FormatKey, string> = {
   y2023_2025: '2023〜2025年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
   y2026_: '2026年以降発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
   basic_land: 'MTGの基本土地高額カードをセット別にリスト一覧でまとめて展示。',
-  token: 'MTGのトークン高額カードをセット別にリスト一覧でまとめて展示',
-  foil: 'MTGの高額FOIL(フォイル)コモン・アンコモンをセット別にリスト一覧でまとめて展示',
+  token: 'MTGのトークン高額カードをセット別にリスト一覧でまとめて展示。',
+  foil: 'MTGの高額FOIL(フォイル)コモン・アンコモンをセット別にリスト一覧でまとめて展示。',
 };
 
 export const FORMAT_PAGE_TITLES: Partial<Record<FormatKey, string>> = {
@@ -121,3 +121,7 @@ export const THRESHOLD_LABELS: Record<ThresholdKey, string> = {
   foilCommon: 'Foil Common Price Threshold:',
   foilUncommon: 'Foil Uncommon Price Threshold:',
 };
+
+export function scryfallSetSvgUrl(setCode: string): string {
+  return `https://svgs.scryfall.io/sets/${setCode}.svg`;
+}

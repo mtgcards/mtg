@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { SerializedCard, FormatKey, Currency, Shop, ExchangeRates, ThresholdKey } from '@/lib/types';
-import { THRESHOLD_OPTIONS } from '@/lib/constants';
+import { DEFAULT_THRESHOLDS, scryfallSetSvgUrl } from '@/lib/constants';
 import { fetchExchangeRates } from '@/lib/exchange';
 import { getSetSectionId, filterCardsByThreshold } from '@/lib/utils';
 import ThresholdBar from './ThresholdBar';
@@ -40,16 +40,8 @@ function groupBySet(cards: SerializedCard[]): SetGroup[] {
   return groups;
 }
 
-function getDefaultThresholds(): Record<ThresholdKey, number> {
-  const result = {} as Record<ThresholdKey, number>;
-  for (const key of Object.keys(THRESHOLD_OPTIONS) as ThresholdKey[]) {
-    result[key] = THRESHOLD_OPTIONS[key].default;
-  }
-  return result;
-}
-
 export default function CardGrid({ cards, format }: CardGridProps) {
-  const [thresholds, setThresholds] = useState<Record<ThresholdKey, number>>(getDefaultThresholds);
+  const [thresholds, setThresholds] = useState<Record<ThresholdKey, number>>(() => ({ ...DEFAULT_THRESHOLDS }));
   const [currency, setCurrency] = useState<Currency>('USD');
   const [shop, setShop] = useState<Shop>('hareruya');
   const [exchangeRates, setExchangeRates] = useState<ExchangeRates>({ JPY: null, EUR: null });
@@ -97,7 +89,7 @@ export default function CardGrid({ cards, format }: CardGridProps) {
             <a key={link.id} href={`#${link.id}`} className="set-nav-link">
               {link.setCode && (
                 <img
-                  src={`https://svgs.scryfall.io/sets/${link.setCode}.svg`}
+                  src={scryfallSetSvgUrl(link.setCode)}
                   alt=""
                   className="set-symbol"
                 />

@@ -51,7 +51,7 @@ export default function ThresholdBar({
         );
       })}
       <label>
-        Currency:
+        通貨:
         <select value={currency} onChange={(e) => onCurrencyChange(e.target.value as Currency)}>
           <option value="USD">$</option>
           <option value="JPY">¥</option>
@@ -59,7 +59,7 @@ export default function ThresholdBar({
         </select>
       </label>
       <label>
-        Card Link:
+        ショップ:
         <select value={shop} onChange={(e) => onShopChange(e.target.value as Shop)}>
           <option value="hareruya">hareruya</option>
           <option value="cardkingdom">cardkingdom</option>

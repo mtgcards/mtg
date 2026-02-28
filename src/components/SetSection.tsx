@@ -1,6 +1,7 @@
 'use client';
 
 import { SerializedCard, Currency, Shop, ExchangeRates } from '@/lib/types';
+import { scryfallSetSvgUrl } from '@/lib/constants';
 import { getSetSectionId } from '@/lib/utils';
 import CardItem from './CardItem';
 
@@ -32,7 +33,7 @@ export default function SetSection({
       <h2 className="set-title">
         {setCode && (
           <img
-            src={`https://svgs.scryfall.io/sets/${setCode}.svg`}
+            src={scryfallSetSvgUrl(setCode)}
             alt=""
             className="set-symbol"
           />
