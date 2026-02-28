@@ -1,5 +1,7 @@
 # 昭和MTG 高額コモン&アンコモン貴重品室
 
+**公開URL: https://mtg.syowa.workers.dev/**
+
 Scryfall API を使って MTG のコモン・アンコモン・基本土地・トークン・FOIL カードの中から高値のものを年代別・セット別に一覧表示する Web アプリ。
 
 ## 機能
