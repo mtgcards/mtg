@@ -47,7 +47,7 @@ h1,
 h2,
 h3,
 .set-title {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
 }
 
 /* ===== Main ===== */
@@ -78,7 +78,7 @@ main {
   border-radius: 6px 6px 0 0;
   padding: 0rem 1.6rem;
   font-size: 1rem;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
   font-weight: 700;
   cursor: pointer;
   letter-spacing: 0.05em;
@@ -126,7 +126,7 @@ main {
   overflow: hidden;
   color: #e0d0b0;
   text-decoration: none;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
   font-size: 0.7rem;
   font-weight: 600;
   padding: 0.25rem 0.6rem;
@@ -187,7 +187,7 @@ main {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
   font-size: 0.85rem;
   font-weight: 600;
   color: #d4a017;
@@ -200,7 +200,7 @@ main {
   border: 1px solid #c04040;
   border-radius: 4px;
   padding: 0.3rem 0.6rem;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
   font-size: 0.85rem;
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -336,7 +336,7 @@ main {
   justify-content: center;
   color: #333;
   font-size: 2rem;
-  font-family: 'MedievalSharp', cursive;
+  font-family: var(--font-medieval-sharp), cursive;
   user-select: none;
 }
 
@@ -353,7 +353,7 @@ main {
   font-weight: 700;
   margin-bottom: 0.3rem;
   line-height: 1.2;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
 }
 
 .card.rarity-uncommon .card-name {
@@ -393,7 +393,7 @@ main {
   gap: 2rem;
   padding: 5rem 1rem;
   color: #1e5fa8;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
   font-size: 1.2rem;
   text-shadow: 0 0 15px rgba(30, 95, 168, 0.9);
 }
@@ -446,7 +446,7 @@ main {
   border: 2px solid #d4a017;
   padding: 1.1rem 4rem;
   font-size: 1.2rem;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
   font-weight: 700;
   border-radius: 4px;
   cursor: pointer;
@@ -519,7 +519,7 @@ main {
   padding: 4rem;
   color: #a08c70;
   font-size: 1.2rem;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
   font-style: italic;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
 }
@@ -569,7 +569,7 @@ footer {
   font-size: 0.95rem;
   border-top: 2px solid #2b1a0e;
   background: #0a0502;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
 }
 
 footer a {
@@ -658,7 +658,7 @@ footer a:hover {
   color: #d4a017;
   border: 1px solid #8b1a1a;
   border-radius: 4px;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
   font-size: 0.9rem;
   text-decoration: none;
   transition: all 0.2s;
@@ -685,7 +685,7 @@ footer a:hover {
 }
 
 .form-group label {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
   font-size: 0.9rem;
   color: #d4a017;
   font-weight: 600;
@@ -723,7 +723,7 @@ footer a:hover {
   border: 2px solid #d4a017;
   padding: 0.8rem 2.5rem;
   font-size: 1rem;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
   font-weight: 700;
   border-radius: 4px;
   cursor: pointer;
@@ -747,7 +747,7 @@ footer a:hover {
   border-radius: 6px;
   padding: 1.2rem 1.5rem;
   color: #d4a017;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-cinzel), serif;
   margin-top: 1rem;
 }
 

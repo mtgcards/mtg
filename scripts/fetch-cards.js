@@ -39,7 +39,7 @@ const EXCLUDED_SETS = new Set([
 const EXCLUDED_PREFIXES = ['Duel Decks:', 'Duel Decks Anthology:', 'Archenemy:'];
 
 const DATE_RANGES = {
-  y1993_2003: { start: '1995-01-01', end: '2003-12-31' },
+  y1995_2003: { start: '1995-01-01', end: '2003-12-31' },
   y2004_2014: { start: '2004-01-01', end: '2014-12-31' },
   y2015_2020: { start: '2015-01-01', end: '2020-12-31' },
   y2021_2022: { start: '2021-01-01', end: '2022-12-31' },

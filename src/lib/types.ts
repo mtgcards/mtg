@@ -4,7 +4,7 @@ export interface ExchangeRates {
 }
 
 export type FormatKey =
-  | 'y1993_2003'
+  | 'y1995_2003'
   | 'y2004_2014'
   | 'y2015_2020'
   | 'y2021_2022'

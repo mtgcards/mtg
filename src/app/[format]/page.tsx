@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import { fetchCardsForFormat } from '@/lib/cards';
-import { ALL_FORMAT_KEYS, TAB_LABELS, FORMAT_DESCRIPTIONS, SITE_URL, DEFAULT_FORMAT, buildFormatMetadata } from '@/lib/constants';
+import { ALL_FORMAT_KEYS, TAB_LABELS, FORMAT_DESCRIPTIONS, FORMAT_PAGE_TITLES, SITE_URL, DEFAULT_FORMAT, buildFormatMetadata } from '@/lib/constants';
 import { FormatKey } from '@/lib/types';
 import CardPageLayout from '@/components/CardPageLayout';
 
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: FormatPageProps): Promise<Met
   const description = FORMAT_DESCRIPTIONS[formatKey];
   const pageUrl = `${SITE_URL}/${format}`;
 
-  return buildFormatMetadata(label, description, pageUrl);
+  return buildFormatMetadata(label, description, pageUrl, FORMAT_PAGE_TITLES[formatKey]);
 }
 
 export default async function FormatPage({ params }: FormatPageProps) {

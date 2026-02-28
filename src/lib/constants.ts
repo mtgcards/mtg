@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { FormatKey, ThresholdKey } from './types';
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mtg-common-uncommon-cloudflare.masasikatano.workers.dev';
-export const DEFAULT_FORMAT: FormatKey = 'y1993_2003';
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mtg.syowa.workers.dev';
+export const DEFAULT_FORMAT: FormatKey = 'y1995_2003';
 export const SITE_NAME = '昭和MTG 高額コモン&アンコモン貴重品室';
 
 export function pageTitle(pageName: string): string {
@@ -10,7 +10,7 @@ export function pageTitle(pageName: string): string {
 }
 
 export const ALL_FORMAT_KEYS: FormatKey[] = [
-  'y1993_2003',
+  'y1995_2003',
   'y2004_2014',
   'y2015_2020',
   'y2021_2022',
@@ -22,7 +22,7 @@ export const ALL_FORMAT_KEYS: FormatKey[] = [
 ];
 
 export const TAB_LABELS: Record<FormatKey, string> = {
-  y1993_2003: '1995〜2003',
+  y1995_2003: '1995〜2003',
   y2004_2014: '2004〜2014',
   y2015_2020: '2015〜2020',
   y2021_2022: '2021〜2022',
@@ -34,24 +34,28 @@ export const TAB_LABELS: Record<FormatKey, string> = {
 };
 
 export const FORMAT_DESCRIPTIONS: Record<FormatKey, string> = {
-  y1993_2003: '1995〜2003年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
+  y1995_2003: '1995〜2003年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
   y2004_2014: '2004〜2014年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
   y2015_2020: '2015〜2020年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
   y2021_2022: '2021〜2022年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
   y2023_2025: '2023〜2025年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
   y2026_: '2026年以降発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
-  basic_land: 'MTGの高額Basic Landカードをセット別にリスト一覧でまとめて展示。',
-  token: 'MTGの高額トークンカードをセット別にリスト一覧でまとめて展示',
-  foil: 'MTGの高額フォイルコモン・アンコモンをセット別にリスト一覧でまとめて展示',
+  basic_land: 'MTGの基本土地高額カードをセット別にリスト一覧でまとめて展示。',
+  token: 'MTGのトークン高額カードをセット別にリスト一覧でまとめて展示',
+  foil: 'MTGの高額FOIL(フォイル)コモン・アンコモンをセット別にリスト一覧でまとめて展示',
 };
 
-export function buildFormatMetadata(label: string, description: string, pageUrl: string): Metadata {
-  const title = pageTitle(label);
+export const FORMAT_PAGE_TITLES: Partial<Record<FormatKey, string>> = {
+  y1995_2003: '昭和MTG 1995〜2003年のほぼレガシーの高額コモン&アンコモン貴重品室',
+};
+
+export function buildFormatMetadata(label: string, description: string, pageUrl: string, title?: string): Metadata {
+  const metaTitle = title ?? pageTitle(label);
   return {
-    title,
+    title: metaTitle,
     description,
     openGraph: {
-      title,
+      title: metaTitle,
       description,
       url: pageUrl,
       siteName: SITE_NAME,
@@ -59,7 +63,7 @@ export function buildFormatMetadata(label: string, description: string, pageUrl:
     },
     twitter: {
       card: 'summary',
-      title,
+      title: metaTitle,
       description,
     },
     alternates: {
@@ -67,6 +71,7 @@ export function buildFormatMetadata(label: string, description: string, pageUrl:
     },
   };
 }
+
 
 export const THRESHOLD_OPTIONS: Record<ThresholdKey, { values: number[]; default: number }> = {
   common: {
@@ -102,6 +107,11 @@ export const THRESHOLD_VISIBILITY: Record<string, ThresholdKey[]> = {
 };
 
 export const DEFAULT_THRESHOLD_KEYS: ThresholdKey[] = ['common', 'uncommon'];
+
+export const DEFAULT_THRESHOLDS: Record<ThresholdKey, number> = Object.fromEntries(
+  (Object.entries(THRESHOLD_OPTIONS) as [ThresholdKey, { values: number[]; default: number }][])
+    .map(([key, opt]) => [key, opt.default])
+) as Record<ThresholdKey, number>;
 
 export const THRESHOLD_LABELS: Record<ThresholdKey, string> = {
   common: 'Common Price Threshold:',
