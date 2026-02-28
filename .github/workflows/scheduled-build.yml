@@ -1,19 +1,25 @@
 name: Scheduled Deploy
 on:
   schedule:
-    - cron: '0 3,15 * * *'  # JST 12:00（UTC 3:00）と JST 0:00（UTC 15:00）  
-  workflow_dispatch:       # 手動実行も可能
+    - cron: '0 3,15 * * *'  # JST 12:00（UTC 3:00）と JST 0:00（UTC 15:00）
+  workflow_dispatch:         # 手動実行も可能
 
 jobs:
-  trigger-build:
+  deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Trigger empty commit to redeploy
-        run: |
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-          git commit --allow-empty -m "chore: scheduled rebuild $(date -u)"
-          git push
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build & Deploy
+        run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
