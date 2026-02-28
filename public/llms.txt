@@ -1,0 +1,24 @@
+# 昭和MTG 高額コモン&アンコモン貴重品室
+
+> Magic: The Gathering（MTG）のコモン・アンコモンカードの中から高額品を年代別・セット別に一覧表示する日本語サービスです。価格データはScryfall APIからビルド時に取得し、12時間ごとに更新されます。USD / JPY / EUR の通貨切り替えに対応しています。
+
+## カード一覧ページ（年代別）
+
+- [1995〜2003年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/): 昭和MTG 1995〜2003年のほぼレガシーの高額コモン&アンコモン貴重品室
+- [2004〜2014年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/y2004_2014): 2004〜2014年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
+- [2015〜2020年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/y2015_2020): 2015〜2020年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
+- [2021〜2022年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/y2021_2022): 2021〜2022年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
+- [2023〜2025年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/y2023_2025): 2023〜2025年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
+- [2026年以降の高額コモン・アンコモン](https://mtg.syowa.workers.dev/y2026_): 2026年以降発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
+
+## カード一覧ページ（種別）
+
+- [高額Basic Land](https://mtg.syowa.workers.dev/basic_land): MTGの基本土地高額カードをセット別にリスト一覧でまとめて展示
+- [高額Token](https://mtg.syowa.workers.dev/token): MTGのトークン高額カードをセット別にリスト一覧でまとめて展示
+- [高額Foil](https://mtg.syowa.workers.dev/foil): MTGの高額FOIL（フォイル）コモン・アンコモンをセット別にリスト一覧でまとめて展示
+
+## サイト情報
+
+- [このサイトについて](https://mtg.syowa.workers.dev/about): サービス概要・データソース・免責事項・よくある質問
+- [お問い合わせ](https://mtg.syowa.workers.dev/contact): バグ報告・ご意見ご要望
+- [プライバシーポリシー](https://mtg.syowa.workers.dev/privacy): 個人情報の取り扱い方針
