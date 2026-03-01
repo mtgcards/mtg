@@ -8,6 +8,7 @@
  * (automatically invoked via npm's `prebuild` lifecycle hook)
  */
 
+const { existsSync } = require('node:fs');
 const { mkdir, writeFile } = require('node:fs/promises');
 
 const API_BASE = 'https://api.justtcg.com/v1';
@@ -144,9 +145,13 @@ async function main() {
   const emptyResult = { '24h': [], '7d': [], '30d': [], '90d': [] };
 
   if (!API_KEY) {
-    console.log('[fetch-price-movers] JUSTTCG_API_KEY not set — writing empty data');
-    await mkdir('src/generated', { recursive: true });
-    await writeFile('src/generated/price-movers.json', JSON.stringify(emptyResult));
+    if (existsSync('src/generated/price-movers.json')) {
+      console.log('[fetch-price-movers] JUSTTCG_API_KEY not set — keeping existing cache');
+    } else {
+      console.log('[fetch-price-movers] JUSTTCG_API_KEY not set — writing empty data');
+      await mkdir('src/generated', { recursive: true });
+      await writeFile('src/generated/price-movers.json', JSON.stringify(emptyResult));
+    }
     return;
   }
 
@@ -155,9 +160,13 @@ async function main() {
   const allSets = await fetchAllSets();
   console.log(`[fetch-price-movers] fetchAllSets returned ${allSets.length} sets`);
   if (allSets.length === 0) {
-    console.warn('[fetch-price-movers] No sets returned — writing empty data');
-    await mkdir('src/generated', { recursive: true });
-    await writeFile('src/generated/price-movers.json', JSON.stringify(emptyResult));
+    if (existsSync('src/generated/price-movers.json')) {
+      console.warn('[fetch-price-movers] No sets returned — keeping existing cache');
+    } else {
+      console.warn('[fetch-price-movers] No sets returned — writing empty data');
+      await mkdir('src/generated', { recursive: true });
+      await writeFile('src/generated/price-movers.json', JSON.stringify(emptyResult));
+    }
     return;
   }
   const eligibleSets = allSets.filter((s) => !isExcludedSet(s.name));

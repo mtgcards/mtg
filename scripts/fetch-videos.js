@@ -8,6 +8,7 @@
  * (automatically invoked via npm's `prebuild` lifecycle hook)
  */
 
+const { existsSync } = require('node:fs');
 const { mkdir, writeFile } = require('node:fs/promises');
 
 const API_KEY = process.env.YOUTUBE_API_KEY || '';
@@ -56,12 +57,16 @@ async function fetchVideoDetails(videoIds) {
 
 async function main() {
   if (!API_KEY) {
-    console.warn('YOUTUBE_API_KEY not set — writing empty videos.json');
-    await mkdir('src/generated', { recursive: true });
-    await writeFile(
-      'src/generated/videos.json',
-      JSON.stringify({ videos: [], fetchedAt: new Date().toISOString() }),
-    );
+    if (existsSync('src/generated/videos.json')) {
+      console.warn('YOUTUBE_API_KEY not set — keeping existing cache');
+    } else {
+      console.warn('YOUTUBE_API_KEY not set — writing empty videos.json');
+      await mkdir('src/generated', { recursive: true });
+      await writeFile(
+        'src/generated/videos.json',
+        JSON.stringify({ videos: [], fetchedAt: new Date().toISOString() }),
+      );
+    }
     return;
   }
 
