@@ -1,4 +1,4 @@
-name: Scheduled Deploy (Scryfall - 毎日)
+name: Scheduled Deploy (Scryfall)
 
 on:
   schedule:

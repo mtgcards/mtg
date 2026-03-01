@@ -1,4 +1,4 @@
-name: Scheduled Deploy (JustTCG - 6時間毎)
+name: Scheduled Deploy (JustTCG)
 
 on:
   # schedule:

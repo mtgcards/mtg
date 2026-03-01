@@ -1,4 +1,4 @@
-name: Scheduled Deploy (YouTube - 3時間毎)
+name: Scheduled Deploy (YouTube)
 
 on:
   schedule:
