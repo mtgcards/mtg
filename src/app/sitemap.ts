@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .filter((key) => key !== DEFAULT_FORMAT)
     .map((key) => ({
       url: `${SITE_URL}/${key}`,
-      changeFrequency: 'weekly',
+      changeFrequency: 'daily',
       priority: 0.8,
     }));
 
@@ -26,5 +26,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     ...formatUrls,
     ...priceMoverUrls,
+    {
+      url: `${SITE_URL}/about`,
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    {
+      url: `${SITE_URL}/contact`,
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    {
+      url: `${SITE_URL}/privacy`,
+      changeFrequency: 'monthly',
+      priority: 0.3,
+    },
   ];
 }

@@ -25,7 +25,7 @@ export default function TabBar({ activeFormat }: TabBarProps) {
         );
       })}
       <Link
-        href="/price_movers"
+        href="/price_movers/7d"
         className={`tab-btn${activeFormat === 'price_movers' ? ' active' : ''}`}
         role="tab"
       >
