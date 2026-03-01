@@ -14,9 +14,11 @@
 # next.js
 /.next/
 /out/
+/.open-next/
 
 # production
 /build
+/src/generated/cards.json
 
 # misc
 .DS_Store
