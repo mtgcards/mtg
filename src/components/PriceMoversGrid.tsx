@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Shop, Currency, ExchangeRates } from '@/lib/types';
 import { fetchExchangeRates } from '@/lib/exchange';
 import { getCardLinkUrl, convertFromUSD } from '@/lib/utils';
@@ -29,10 +30,10 @@ function getPriceChange(card: PriceMoverCard, period: PriceMoverPeriod): number 
 
 interface PriceMoversGridProps {
   data: PriceMoverData;
+  period: PriceMoverPeriod;
 }
 
-export default function PriceMoversGrid({ data }: PriceMoversGridProps) {
-  const [period, setPeriod] = useState<PriceMoverPeriod>('7d');
+export default function PriceMoversGrid({ data, period }: PriceMoversGridProps) {
   const [shop, setShop] = useState<Shop>('hareruya');
   const [currency, setCurrency] = useState<Currency>('USD');
   const [exchangeRates, setExchangeRates] = useState<ExchangeRates>({ JPY: null, EUR: null });
@@ -48,13 +49,13 @@ export default function PriceMoversGrid({ data }: PriceMoversGridProps) {
       <div className="price-threshold-bar">
         <div className="period-tabs">
           {PERIOD_KEYS.map((p) => (
-            <button
+            <Link
               key={p}
+              href={`/price_movers/${p}`}
               className={`period-tab${p === period ? ' active' : ''}`}
-              onClick={() => setPeriod(p)}
             >
               {PERIOD_LABELS[p]}
-            </button>
+            </Link>
           ))}
         </div>
         <label>
