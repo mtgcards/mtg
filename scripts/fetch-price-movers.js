@@ -87,9 +87,19 @@ function scryfallImageUrl(id) {
 async function jtcgFetch(path, params) {
   const url = new URL(`${API_BASE}${path}`);
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
-  const res = await fetch(url.toString(), { headers: { 'x-api-key': API_KEY } });
+  // Log URL without API key for debugging
+  const displayUrl = url.toString().replace(API_KEY, '***');
+  console.log(`[fetch-price-movers] GET ${displayUrl}`);
+  let res;
+  try {
+    res = await fetch(url.toString(), { headers: { 'x-api-key': API_KEY } });
+  } catch (err) {
+    console.warn(`[fetch-price-movers] JustTCG ${path} network error: ${err.message}`);
+    return null;
+  }
   if (!res.ok) {
-    console.warn(`[fetch-price-movers] JustTCG ${path} failed: ${res.status}`);
+    const body = await res.text().catch(() => '(unreadable)');
+    console.warn(`[fetch-price-movers] JustTCG ${path} failed: HTTP ${res.status} — ${body}`);
     return null;
   }
   return res.json();
@@ -143,6 +153,13 @@ async function main() {
   // 1. Fetch all MTG sets (1 API call)
   console.log('[fetch-price-movers] Fetching MTG sets...');
   const allSets = await fetchAllSets();
+  console.log(`[fetch-price-movers] fetchAllSets returned ${allSets.length} sets`);
+  if (allSets.length === 0) {
+    console.warn('[fetch-price-movers] No sets returned — writing empty data');
+    await mkdir('src/generated', { recursive: true });
+    await writeFile('src/generated/price-movers.json', JSON.stringify(emptyResult));
+    return;
+  }
   const eligibleSets = allSets.filter((s) => !isExcludedSet(s.name));
   console.log(`[fetch-price-movers] ${eligibleSets.length} eligible sets`);
 
