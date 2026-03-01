@@ -7,6 +7,7 @@ import {
   THRESHOLD_LABELS,
 } from '@/lib/constants';
 import { FormatKey, Currency, Shop, ThresholdKey } from '@/lib/types';
+import CurrencyShopSelector from './CurrencyShopSelector';
 
 interface ThresholdBarProps {
   format: FormatKey;
@@ -50,22 +51,12 @@ export default function ThresholdBar({
           </label>
         );
       })}
-      <label>
-        Currency :
-        <select value={currency} onChange={(e) => onCurrencyChange(e.target.value as Currency)}>
-          <option value="USD">$</option>
-          <option value="JPY">¥</option>
-          <option value="EUR">€</option>
-        </select>
-      </label>
-      <label>
-        Card Link to :
-        <select value={shop} onChange={(e) => onShopChange(e.target.value as Shop)}>
-          <option value="hareruya">hareruya</option>
-          <option value="cardkingdom">cardkingdom</option>
-          <option value="tcgplayer">tcgplayer</option>
-        </select>
-      </label>
+      <CurrencyShopSelector
+        currency={currency}
+        shop={shop}
+        onCurrencyChange={onCurrencyChange}
+        onShopChange={onShopChange}
+      />
     </div>
   );
 }

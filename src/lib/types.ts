@@ -31,3 +31,5 @@ export interface SerializedCard {
 }
 
 export type ThresholdKey = 'common' | 'uncommon' | 'basicLand' | 'token' | 'foilCommon' | 'foilUncommon';
+
+export type TabKey = FormatKey | 'price_movers';

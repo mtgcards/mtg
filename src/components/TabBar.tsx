@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { ALL_FORMAT_KEYS, TAB_LABELS, DEFAULT_FORMAT } from '@/lib/constants';
-import { FormatKey } from '@/lib/types';
+import { TabKey } from '@/lib/types';
 
 interface TabBarProps {
-  activeFormat: FormatKey | 'price_movers';
+  activeFormat: TabKey;
 }
 
 export default function TabBar({ activeFormat }: TabBarProps) {

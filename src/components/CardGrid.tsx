@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
-import { SerializedCard, FormatKey, Currency, Shop, ExchangeRates, ThresholdKey } from '@/lib/types';
+import { useState, useMemo, useCallback } from 'react';
+import { SerializedCard, FormatKey, Currency, Shop, ThresholdKey } from '@/lib/types';
 import { DEFAULT_THRESHOLDS, scryfallSetSvgUrl } from '@/lib/constants';
-import { fetchExchangeRates } from '@/lib/exchange';
+import { useExchangeRates } from '@/lib/exchange';
 import { getSetSectionId, filterCardsByThreshold } from '@/lib/utils';
 import ThresholdBar from './ThresholdBar';
 import SetSection from './SetSection';
@@ -44,11 +44,7 @@ export default function CardGrid({ cards, format }: CardGridProps) {
   const [thresholds, setThresholds] = useState<Record<ThresholdKey, number>>(() => ({ ...DEFAULT_THRESHOLDS }));
   const [currency, setCurrency] = useState<Currency>('USD');
   const [shop, setShop] = useState<Shop>('hareruya');
-  const [exchangeRates, setExchangeRates] = useState<ExchangeRates>({ JPY: null, EUR: null });
-
-  useEffect(() => {
-    fetchExchangeRates().then(setExchangeRates);
-  }, []);
+  const exchangeRates = useExchangeRates();
 
   const handleThresholdChange = useCallback((key: ThresholdKey, value: number) => {
     setThresholds((prev) => ({ ...prev, [key]: value }));
