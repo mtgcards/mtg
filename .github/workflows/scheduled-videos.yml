@@ -39,6 +39,11 @@ jobs:
         env:
           JUSTTCG_API_KEY: ${{ secrets.JUSTTCG_API_KEY }}
 
+      - name: Verify videos.json before build
+        run: |
+          echo "=== videos.json video count ==="
+          node -e "const d=require('./src/generated/videos.json'); console.log('videos:', d.videos.length, 'fetchedAt:', d.fetchedAt);"
+
       - name: Build
         run: npx opennextjs-cloudflare build
         env:

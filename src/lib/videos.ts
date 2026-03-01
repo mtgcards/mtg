@@ -1,4 +1,5 @@
-import data from '@/generated/videos.json';
+import fs from 'fs';
+import path from 'path';
 import { YouTubeVideo } from './types';
 
 interface VideosData {
@@ -7,5 +8,7 @@ interface VideosData {
 }
 
 export function fetchVideos(): VideosData {
-  return data as unknown as VideosData;
+  const filePath = path.join(process.cwd(), 'src/generated/videos.json');
+  const raw = fs.readFileSync(filePath, 'utf-8');
+  return JSON.parse(raw) as VideosData;
 }
