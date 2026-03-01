@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/fetch-cards.js",
+    "prebuild": "node scripts/fetch-cards.js && node scripts/fetch-price-movers.js",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

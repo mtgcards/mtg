@@ -5,7 +5,7 @@ import { ALL_FORMAT_KEYS, TAB_LABELS, DEFAULT_FORMAT } from '@/lib/constants';
 import { FormatKey } from '@/lib/types';
 
 interface TabBarProps {
-  activeFormat: FormatKey;
+  activeFormat: FormatKey | 'price_movers';
 }
 
 export default function TabBar({ activeFormat }: TabBarProps) {
@@ -24,6 +24,13 @@ export default function TabBar({ activeFormat }: TabBarProps) {
           </Link>
         );
       })}
+      <Link
+        href="/price_movers"
+        className={`tab-btn${activeFormat === 'price_movers' ? ' active' : ''}`}
+        role="tab"
+      >
+        値上がり
+      </Link>
     </nav>
   );
 }

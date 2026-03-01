@@ -62,11 +62,17 @@ main {
 /* ===== Tab Bar (Worn leather bookmark tabs) ===== */
 .tab-bar {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   gap: 0.4rem;
   padding-bottom: 0;
   /* Removed border-bottom and margin-bottom as they are now handled by .top-bar */
   flex: 1;
+  scrollbar-width: none; /* Firefox */
+}
+
+.tab-bar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 .tab-btn {
@@ -76,7 +82,7 @@ main {
   text-decoration: none;
   border-bottom: none;
   border-radius: 6px 6px 0 0;
-  padding: 0rem 1.6rem;
+  padding: 0rem 1.2rem;
   font-size: 1rem;
   font-family: var(--font-cinzel), serif;
   font-weight: 700;
@@ -749,6 +755,68 @@ footer a:hover {
   color: #d4a017;
   font-family: var(--font-cinzel), serif;
   margin-top: 1rem;
+}
+
+/* ===== Period Tabs ===== */
+.period-tabs {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.period-tab {
+  background: linear-gradient(to bottom, #3d2314, #2b1a0e);
+  color: #a08c70;
+  border: 1px solid #4a2e15;
+  border-radius: 4px;
+  padding: 0.3rem 0.8rem;
+  font-family: var(--font-cinzel), serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.period-tab:hover {
+  color: #d4a017;
+  border-color: #d4a017;
+}
+
+.period-tab.active {
+  color: #1a0e05;
+  background: linear-gradient(135deg, #f5d78d, #d4a017);
+  border-color: #d4a017;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* ===== Price Change Badge ===== */
+.card-price-change {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-top: 0.15rem;
+}
+
+.card-price-change.positive {
+  color: #4caf50;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.card.rarity-uncommon .card-price-change.positive {
+  color: #2e7d32;
+  text-shadow: none;
+}
+
+/* ===== Card Set Name ===== */
+.card-set-name {
+  font-size: 0.7rem;
+  color: #a08c70;
+  margin-bottom: 0.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card.rarity-uncommon .card-set-name {
+  color: #555;
 }
 
 /* ===== Responsive ===== */

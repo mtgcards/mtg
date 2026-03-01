@@ -19,6 +19,7 @@
 # production
 /build
 /src/generated/cards.json
+/src/generated/price-movers.json
 
 # misc
 .DS_Store
