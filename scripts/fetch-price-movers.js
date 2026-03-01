@@ -182,7 +182,7 @@ async function main() {
   let callCount = 0;
 
   for (const setId of uniqueSetIds) {
-    if (callCount > 0) await delay(200); // ~5 req/s, well under 10/min limit
+    if (callCount > 0) await delay(7000); // 10 req/min limit: 7s gap keeps total under limit
     const cards = await fetchCardsForSet(setId);
     cardsBySetId[setId] = cards;
     callCount++;
