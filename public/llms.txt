@@ -17,6 +17,10 @@
 - [高額Token](https://mtg.syowa.workers.dev/token): MTGのトークン高額カードをセット別にリスト一覧でまとめて展示
 - [高額Foil](https://mtg.syowa.workers.dev/foil): MTGの高額FOIL（フォイル）コモン・アンコモンをセット別にリスト一覧でまとめて展示
 
+## 値上がりカード
+
+- [値上がりカード](https://mtg.syowa.workers.dev/price_movers): MTGのコモン・アンコモンカードで値上がりが大きいカードをランキング表示。24時間・1週間・1ヶ月・3ヶ月の値上がりを確認できます。
+
 ## サイト情報
 
 - [このサイトについて](https://mtg.syowa.workers.dev/about): サービス概要・データソース・免責事項・よくある質問

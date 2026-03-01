@@ -50,6 +50,7 @@ export default function AboutPage() {
             <li>年代別タブによるカードの絞り込み表示（1995〜現在）</li>
             <li>コモン・アンコモンの価格閾値によるフィルタリング</li>
             <li>Basic Land、Token、Foilカードの別途一覧表示</li>
+            <li>値上がりカードランキング（24時間・1週間・1ヶ月・3ヶ月）</li>
             <li>USD / JPY / EUR への通貨変換</li>
             <li>hareruya / cardkingdom / tcgplayer へのカード購入リンク</li>
           </ul>
@@ -61,7 +62,7 @@ export default function AboutPage() {
               Scryfall
             </a>
             のAPIを利用しています。
-            価格はリアルタイムで取得されるため、実際の市場価格と若干異なる場合があります。
+            価格はビルド時に取得され、12時間ごとに更新されます。実際の市場価格と若干異なる場合があります。
           </p>
           <p>
             為替レートは{' '}
