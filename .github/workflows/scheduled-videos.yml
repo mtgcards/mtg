@@ -2,7 +2,7 @@ name: Scheduled Deploy (YouTube - 3時間毎)
 
 on:
   schedule:
-    - cron: '0 0,3,6,9,12,15,18,21 * * *'  # JST 9:00/12:00/15:00/18:00/21:00/0:00/3:00/6:00（UTC 0:00/3:00/6:00/9:00/12:00/15:00/18:00/21:00）
+    - cron: '0 15 * * *'  # JST 0:00（UTC 15:00）毎日1回
   workflow_dispatch:
 
 jobs:
