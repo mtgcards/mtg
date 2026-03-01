@@ -1,5 +1,3 @@
-import data from '@/generated/price-movers.json';
-
 export interface PriceMoverCard {
   name: string;
   rarity: string;
@@ -39,6 +37,3 @@ export function isPriceMoverPeriod(value: string): value is PriceMoverPeriod {
   return PERIOD_KEYS.includes(value as PriceMoverPeriod);
 }
 
-export function fetchPriceMovers(): PriceMoverData {
-  return data as unknown as PriceMoverData;
-}

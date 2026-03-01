@@ -1,10 +1,18 @@
+import fs from 'fs';
+import path from 'path';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { SITE_URL, SITE_NAME, buildFormatMetadata } from '@/lib/constants';
-import { fetchPriceMovers, PriceMoverPeriod, PERIOD_KEYS, PERIOD_LABELS, isPriceMoverPeriod } from '@/lib/price-movers';
+import { PriceMoverData, PriceMoverPeriod, PERIOD_KEYS, PERIOD_LABELS, isPriceMoverPeriod } from '@/lib/price-movers';
 import TabBar from '@/components/TabBar';
 import PriceMoversGrid from '@/components/PriceMoversGrid';
 import { BreadcrumbJsonLd } from '@/components/JsonLd';
+
+function fetchPriceMovers(): PriceMoverData {
+  const filePath = path.join(process.cwd(), 'src/generated/price-movers.json');
+  const raw = fs.readFileSync(filePath, 'utf-8');
+  return JSON.parse(raw) as PriceMoverData;
+}
 
 export function generateStaticParams() {
   return PERIOD_KEYS.map((period) => ({ period }));
