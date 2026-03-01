@@ -11,7 +11,7 @@
 const { mkdir, writeFile } = require('node:fs/promises');
 
 const API_BASE = 'https://api.justtcg.com/v1';
-const API_KEY = process.env.JustTCG_API_KEY || '';
+const API_KEY = process.env.JUSTTCG_API_KEY || '';
 
 const PERIODS = ['24h', '7d', '30d', '90d'];
 const TOP_SETS_PER_PERIOD = 8;
@@ -134,7 +134,7 @@ async function main() {
   const emptyResult = { '24h': [], '7d': [], '30d': [], '90d': [] };
 
   if (!API_KEY) {
-    console.log('[fetch-price-movers] JustTCG_API_KEY not set — writing empty data');
+    console.log('[fetch-price-movers] JUSTTCG_API_KEY not set — writing empty data');
     await mkdir('src/generated', { recursive: true });
     await writeFile('src/generated/price-movers.json', JSON.stringify(emptyResult));
     return;
