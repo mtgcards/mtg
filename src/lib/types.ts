@@ -32,4 +32,13 @@ export interface SerializedCard {
 
 export type ThresholdKey = 'common' | 'uncommon' | 'basicLand' | 'token' | 'foilCommon' | 'foilUncommon';
 
-export type TabKey = FormatKey | 'price_movers';
+export type TabKey = FormatKey | 'price_movers' | 'videos';
+
+export interface YouTubeVideo {
+  id: string;
+  title: string;
+  channelTitle: string;
+  publishedAt: string;
+  thumbnailUrl: string;
+  viewCount: number | null;
+}

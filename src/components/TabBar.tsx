@@ -31,6 +31,13 @@ export default function TabBar({ activeFormat }: TabBarProps) {
       >
         値上がり
       </Link>
+      <Link
+        href="/videos"
+        className={`tab-btn${activeFormat === 'videos' ? ' active' : ''}`}
+        role="tab"
+      >
+        動画
+      </Link>
     </nav>
   );
 }

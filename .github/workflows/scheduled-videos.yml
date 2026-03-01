@@ -1,0 +1,53 @@
+name: Scheduled Deploy (YouTube - 3時間毎)
+
+on:
+  schedule:
+    - cron: '0 0,3,6,9,12,15,18,21 * * *'  # JST 9:00/12:00/15:00/18:00/21:00/0:00/3:00/6:00（UTC 0:00/3:00/6:00/9:00/12:00/15:00/18:00/21:00）
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Restore generated cache
+        uses: actions/cache@v4
+        with:
+          path: src/generated
+          key: generated-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            generated-${{ runner.os }}-
+
+      - name: Fetch YouTube video data
+        run: node scripts/fetch-videos.js
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+
+      - name: Ensure cards data exists (cold start fallback)
+        run: '[ -f src/generated/cards.json ] || node scripts/fetch-cards.js'
+
+      - name: Ensure price-movers data exists (cold start fallback)
+        run: '[ -f src/generated/price-movers.json ] || node scripts/fetch-price-movers.js'
+        env:
+          JUSTTCG_API_KEY: ${{ secrets.JUSTTCG_API_KEY }}
+
+      - name: Build
+        run: npx opennextjs-cloudflare build
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+
+      - name: Deploy
+        run: npx opennextjs-cloudflare deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
