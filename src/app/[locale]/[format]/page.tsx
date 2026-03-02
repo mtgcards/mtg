@@ -45,7 +45,7 @@ export default async function FormatPage({ params }: FormatPageProps) {
   }
 
   if (format === DEFAULT_FORMAT) {
-    redirect('/', { locale });
+    redirect({ href: '/', locale });
   }
 
   const cards = await fetchCardsForFormat(format);
