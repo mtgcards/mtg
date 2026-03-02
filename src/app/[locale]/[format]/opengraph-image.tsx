@@ -1,9 +1,20 @@
 import { getTranslations } from 'next-intl/server';
 import { isFormatKey } from '@/lib/utils';
 import { buildOgImage, OG_CONTENT_TYPE, OG_SIZE } from '@/lib/og';
+import { routing } from '@/i18n/routing';
+import { ALL_FORMAT_KEYS, DEFAULT_FORMAT } from '@/lib/constants';
 
+export const dynamic = 'force-static';
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
+
+export function generateStaticParams() {
+  return routing.locales.flatMap((locale) =>
+    ALL_FORMAT_KEYS
+      .filter((key) => key !== DEFAULT_FORMAT)
+      .map((format) => ({ locale, format }))
+  );
+}
 
 export default async function Image({ params }: { params: Promise<{ locale: string; format: string }> }) {
   const { locale, format } = await params;

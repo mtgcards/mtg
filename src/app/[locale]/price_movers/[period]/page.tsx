@@ -8,6 +8,7 @@ import { PriceMoverData, PERIOD_KEYS, isPriceMoverPeriod } from '@/lib/price-mov
 import TabBar from '@/components/TabBar';
 import PriceMoversGrid from '@/components/PriceMoversGrid';
 import { BreadcrumbJsonLd } from '@/components/JsonLd';
+import { routing } from '@/i18n/routing';
 
 function fetchPriceMovers(): PriceMoverData {
   const filePath = path.join(process.cwd(), 'src/generated/price-movers.json');

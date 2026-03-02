@@ -1,9 +1,14 @@
+import { routing } from '@/i18n/routing';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { pageTitle } from '@/lib/constants';
 import { FaqJsonLd } from '@/components/JsonLd';
 import '@/styles/about.css';
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
