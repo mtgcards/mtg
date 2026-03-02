@@ -5,6 +5,11 @@ import TabBar from '@/components/TabBar';
 import VideoGrid from '@/components/VideoGrid';
 import { BreadcrumbJsonLd } from '@/components/JsonLd';
 import { fetchVideos } from '@/lib/videos';
+import { routing } from '@/i18n/routing';
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;

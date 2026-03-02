@@ -3,6 +3,11 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { fetchCardsForFormat } from '@/lib/cards';
 import { SITE_URL, DEFAULT_FORMAT, buildFormatMetadataI18n } from '@/lib/constants';
 import CardPageLayout from '@/components/CardPageLayout';
+import { routing } from '@/i18n/routing';
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
