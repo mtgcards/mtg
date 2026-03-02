@@ -1,6 +1,6 @@
 # 昭和MTG 高額コモン&アンコモン貴重品室
 
-> Magic: The Gathering（MTG）のコモン・アンコモンカードの中から高額品を年代別・セット別に一覧表示する日本語サービスです。価格データはScryfall APIからビルド時に取得し、毎日1回（JST 0:00）更新されます。USD / JPY / EUR の通貨切り替えに対応しています。
+> Magic: The Gathering（MTG）のコモン・アンコモンカードの中から高額品を年代別・セット別に一覧表示する多言語対応サービスです（日本語・英語・フランス語・ドイツ語）。カードデータはScryfall APIからビルド時に取得し、毎敥1回（JST 0:00）更新されます。USD / JPY / EUR の通貨切り替えに対応しています。
 
 ## カード一覧ページ（年代別）
 
@@ -25,8 +25,17 @@
 
 - [MTG YouTube動画](https://mtg.syowa.workers.dev/videos): MTGに関するYouTube動画をまとめて表示します。
 
+## 多言語対応
+
+各ページは以下の言語に対応しています。URLプレフィックスにロケールコードを付けることで各言語版にアクセスできます。
+
+- 日本語: `https://mtg.syowa.workers.dev/ja/`
+- 英語: `https://mtg.syowa.workers.dev/en/`
+- フランス語: `https://mtg.syowa.workers.dev/fr/`
+- ドイツ語: `https://mtg.syowa.workers.dev/de/`
+
 ## サイト情報
 
 - [このサイトについて](https://mtg.syowa.workers.dev/about): サービス概要・データソース・免責事項・よくある質問
 - [お問い合わせ](https://mtg.syowa.workers.dev/contact): バグ報告・ご意見ご要望
-- [プライバシーポリシー](https://mtg.syowa.workers.dev/privacy): 個人情報の取り扱い方針
+- [プライバシーポリシー](https://mtg.syowa.workers.dev/privacy): 個人情報の取り扱い方针
