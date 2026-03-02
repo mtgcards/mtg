@@ -14,7 +14,7 @@ const FAQ_ITEMS = [
   },
   {
     question: 'このサイトのカード価格はリアルタイムですか？',
-    answer: '価格データはScryfall APIからビルド時に取得しています。リアルタイムではなく、12時間毎に0時と12時に定期的に更新されます。実際の購入・売却時は各ショップで価格をご確認ください。',
+    answer: '価格データはScryfall APIからビルド時に取得しています。リアルタイムではなく、毎日1回（JST 0:00）更新されます。実際の購入・売却時は各ショップで価格をご確認ください。',
   },
   {
     question: 'なぜコモン・アンコモンだけを掲載しているのですか？',
@@ -51,6 +51,7 @@ export default function AboutPage() {
             <li>コモン・アンコモンの価格閾値によるフィルタリング</li>
             <li>Basic Land、Token、Foilカードの別途一覧表示</li>
             <li>値上がりカードランキング（24時間・1週間・1ヶ月・3ヶ月）</li>
+            <li>MTG関連YouTube動画一覧</li>
             <li>USD / JPY / EUR への通貨変換</li>
             <li>hareruya / cardkingdom / tcgplayer へのカード購入リンク</li>
           </ul>
@@ -62,7 +63,14 @@ export default function AboutPage() {
               Scryfall
             </a>
             のAPIを利用しています。
-            価格はビルド時に取得され、12時間ごとに更新されます。実際の市場価格と若干異なる場合があります。
+            価格はビルド時に取得され、毎日1回（JST 0:00）更新されます。実際の市場価格と若干異なる場合があります。
+          </p>
+          <p>
+            値上がりカードの価格データは{' '}
+            <a href="https://justtcg.com" target="_blank" rel="noopener noreferrer">
+              JustTCG
+            </a>
+            のAPIを利用しています。
           </p>
           <p>
             為替レートは{' '}
@@ -70,6 +78,13 @@ export default function AboutPage() {
               Frankfurter
             </a>
             のAPIを利用しています。
+          </p>
+          <p>
+            YouTube動画データは{' '}
+            <a href="https://developers.google.com/youtube/v3" target="_blank" rel="noopener noreferrer">
+              YouTube Data API
+            </a>
+            を利用しています。
           </p>
 
           <h2>免責事項</h2>

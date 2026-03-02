@@ -1,6 +1,6 @@
 # 昭和MTG 高額コモン&アンコモン貴重品室
 
-> Magic: The Gathering（MTG）のコモン・アンコモンカードの中から高額品を年代別・セット別に一覧表示する日本語サービスです。価格データはScryfall APIからビルド時に取得し、12時間ごとに更新されます。USD / JPY / EUR の通貨切り替えに対応しています。
+> Magic: The Gathering（MTG）のコモン・アンコモンカードの中から高額品を年代別・セット別に一覧表示する日本語サービスです。価格データはScryfall APIからビルド時に取得し、毎日1回（JST 0:00）更新されます。USD / JPY / EUR の通貨切り替えに対応しています。
 
 ## カード一覧ページ（年代別）
 
@@ -20,6 +20,10 @@
 ## 値上がりカード
 
 - [値上がりカード](https://mtg.syowa.workers.dev/price_movers): MTGのコモン・アンコモンカードで値上がりが大きいカードをランキング表示。24時間・1週間・1ヶ月・3ヶ月の値上がりを確認できます。
+
+## YouTube動画
+
+- [MTG YouTube動画](https://mtg.syowa.workers.dev/videos): MTGに関するYouTube動画をまとめて表示します。
 
 ## サイト情報
 

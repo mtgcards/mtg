@@ -25,6 +25,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     ...formatUrls,
+    {
+      url: `${SITE_URL}/price_movers`,
+      changeFrequency: 'daily',
+      priority: 0.7,
+    },
     ...priceMoverUrls,
     {
       url: `${SITE_URL}/videos`,
