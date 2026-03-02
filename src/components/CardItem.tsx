@@ -9,9 +9,20 @@ interface CardItemProps {
   currency: Currency;
   shop: Shop;
   exchangeRates: ExchangeRates;
+  /** 価格変動率(%)。指定時に表示する */
+  priceChange?: number | null;
+  /** セット名を表示するか */
+  showSetName?: boolean;
 }
 
-export default function CardItem({ card, currency, shop, exchangeRates }: CardItemProps) {
+export default function CardItem({
+  card,
+  currency,
+  shop,
+  exchangeRates,
+  priceChange,
+  showSetName = false,
+}: CardItemProps) {
   const t = useTranslations('cards');
   const priceText = formatPrice(card, currency, exchangeRates);
   const href = getCardLinkUrl(card.name, shop);
@@ -36,9 +47,13 @@ export default function CardItem({ card, currency, shop, exchangeRates }: CardIt
       </div>
       <div className="card-info">
         <h3 className="card-name">{card.name}</h3>
+        {showSetName && <p className="card-set-name">{card.setName}</p>}
         <p className={priceText ? 'card-price' : 'card-price unavailable'}>
           {priceText || t('noPrice')}
         </p>
+        {priceChange != null && priceChange > 0 && (
+          <p className="card-price-change positive">+{priceChange.toFixed(1)}%</p>
+        )}
       </div>
     </a>
   );

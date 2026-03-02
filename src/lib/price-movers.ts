@@ -17,13 +17,6 @@ export type PriceMoverData = Record<PriceMoverPeriod, PriceMoverCard[]>;
 
 export const PERIOD_KEYS: PriceMoverPeriod[] = ['24h', '7d', '30d', '90d'];
 
-export const PERIOD_LABELS: Record<PriceMoverPeriod, string> = {
-  '24h': '24時間',
-  '7d': '1週間',
-  '30d': '1ヶ月',
-  '90d': '3ヶ月',
-};
-
 export function getPriceChange(card: PriceMoverCard, period: PriceMoverPeriod): number | null {
   switch (period) {
     case '24h': return card.priceChange24hr;
@@ -37,4 +30,3 @@ export function getPriceChange(card: PriceMoverCard, period: PriceMoverPeriod): 
 export function isPriceMoverPeriod(value: string): value is PriceMoverPeriod {
   return PERIOD_KEYS.includes(value as PriceMoverPeriod);
 }
-

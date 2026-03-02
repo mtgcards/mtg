@@ -30,6 +30,10 @@ export function convertFromUSD(usdAmount: number, currency: Currency, rates: Exc
   return '$' + usdAmount.toFixed(2);
 }
 
+/**
+ * カードの価格を表示用文字列に変換する。
+ * 優先順位: priceUsdFoil → priceEurFoil → priceUsd
+ */
 export function formatPrice(card: SerializedCard, currency: Currency, rates: ExchangeRates): string | null {
   if (card.priceUsdFoil !== null) {
     return convertFromUSD(card.priceUsdFoil, currency, rates);

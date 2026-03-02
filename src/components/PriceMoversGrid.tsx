@@ -3,16 +3,32 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Shop, Currency } from '@/lib/types';
+import { Shop, Currency, SerializedCard } from '@/lib/types';
 import { useExchangeRates } from '@/lib/exchange';
 import { getCardLinkUrl, convertFromUSD } from '@/lib/utils';
-import { PriceMoverData, PriceMoverPeriod, PERIOD_KEYS, getPriceChange } from '@/lib/price-movers';
+import { PriceMoverData, PriceMoverPeriod, PERIOD_KEYS, getPriceChange, PriceMoverCard } from '@/lib/price-movers';
+import CardItem from './CardItem';
 import CurrencyShopSelector from './CurrencyShopSelector';
 import BackToTop from './BackToTop';
 
 interface PriceMoversGridProps {
   data: PriceMoverData;
   period: PriceMoverPeriod;
+}
+
+/** PriceMoverCard を CardItem が受け付ける SerializedCard 形式に変換する */
+function toSerializedCard(card: PriceMoverCard): SerializedCard {
+  return {
+    name: card.name,
+    set: card.setId,
+    setName: card.setName,
+    rarity: card.rarity,
+    releasedAt: '',
+    imageUrl: card.imageUrl,
+    priceUsd: card.price,
+    priceUsdFoil: null,
+    priceEurFoil: null,
+  };
 }
 
 export default function PriceMoversGrid({ data, period }: PriceMoversGridProps) {
@@ -56,37 +72,17 @@ export default function PriceMoversGrid({ data, period }: PriceMoversGridProps) 
               {t('topN', { period: tp(period), count: cards.length })}
             </h2>
             <div className="set-card-grid">
-              {cards.map((card, i) => {
-                const change = getPriceChange(card, period);
-                const priceText = convertFromUSD(card.price, currency, exchangeRates);
-                const href = getCardLinkUrl(card.name, shop);
-
-                return (
-                  <a
-                    key={`${card.name}-${card.setId}-${i}`}
-                    className={`card rarity-${card.rarity}`}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <div className="card-image-wrapper">
-                      {card.imageUrl ? (
-                        <img src={card.imageUrl} alt={card.name} loading="lazy" />
-                      ) : (
-                        <div className="card-image-placeholder">?</div>
-                      )}
-                    </div>
-                    <div className="card-info">
-                      <h3 className="card-name">{card.name}</h3>
-                      <p className="card-set-name">{card.setName}</p>
-                      <p className="card-price">{priceText}</p>
-                      {change !== null && change > 0 && (
-                        <p className="card-price-change positive">+{change.toFixed(1)}%</p>
-                      )}
-                    </div>
-                  </a>
-                );
-              })}
+              {cards.map((card, i) => (
+                <CardItem
+                  key={`${card.name}-${card.setId}-${i}`}
+                  card={toSerializedCard(card)}
+                  currency={currency}
+                  shop={shop}
+                  exchangeRates={exchangeRates}
+                  priceChange={getPriceChange(card, period)}
+                  showSetName
+                />
+              ))}
             </div>
           </div>
         </div>

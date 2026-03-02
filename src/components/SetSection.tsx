@@ -43,9 +43,9 @@ export default function SetSection({
         {label}
       </h2>
       <div className="set-card-grid">
-        {cards.map((card, i) => (
+        {cards.map((card) => (
           <CardItem
-            key={`${card.name}-${card.set}-${i}`}
+            key={`${card.name}-${card.set}`}
             card={card}
             currency={currency}
             shop={shop}

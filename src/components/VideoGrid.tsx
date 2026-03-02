@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { YouTubeVideo } from '@/lib/types';
+import { DATE_LOCALES } from '@/lib/constants';
 import BackToTop from './BackToTop';
 
 interface VideoGridProps {
@@ -10,13 +11,6 @@ interface VideoGridProps {
 }
 
 const PAGE_SIZE = 50;
-
-const DATE_LOCALES: Record<string, string> = {
-  ja: 'ja-JP',
-  en: 'en-US',
-  fr: 'fr-FR',
-  de: 'de-DE',
-};
 
 export default function VideoGrid({ videos }: VideoGridProps) {
   const t = useTranslations('videos');

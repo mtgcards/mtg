@@ -49,38 +49,35 @@ export const FORMAT_PAGE_TITLES: Partial<Record<FormatKey, string>> = {
   y1995_2003: '昭和MTG 1995〜2003年のほぼレガシーの高額コモン&アンコモン貴重品室',
 };
 
-export function buildFormatMetadata(label: string, description: string, pageUrl: string, title?: string): Metadata {
-  const metaTitle = title ?? pageTitle(label);
-  return {
-    title: metaTitle,
-    description,
-    openGraph: {
-      title: metaTitle,
-      description,
-      url: pageUrl,
-      siteName: SITE_NAME,
-      locale: 'ja_JP',
-    },
-    twitter: {
-      card: 'summary',
-      title: metaTitle,
-      description,
-    },
-    alternates: {
-      canonical: pageUrl,
-    },
-  };
-}
-
-const OG_LOCALES: Record<string, string> = {
+/** ロケールコード → OpenGraph locale 文字列 */
+export const OG_LOCALES: Record<string, string> = {
   ja: 'ja_JP',
   en: 'en_US',
   fr: 'fr_FR',
   de: 'de_DE',
 };
 
-export function buildFormatMetadataI18n(label: string, description: string, pageUrl: string, locale: string, title?: string): Metadata {
+/** ロケールコード → toLocaleDateString 用 BCP47 タグ */
+export const DATE_LOCALES: Record<string, string> = {
+  ja: 'ja-JP',
+  en: 'en-US',
+  fr: 'fr-FR',
+  de: 'de-DE',
+};
+
+/**
+ * フォーマットページ用 Metadata を生成する。
+ * locale を省略すると ja_JP をデフォルトとする。
+ */
+export function buildFormatMetadata(
+  label: string,
+  description: string,
+  pageUrl: string,
+  locale?: string,
+  title?: string,
+): Metadata {
   const metaTitle = title ?? pageTitle(label);
+  const ogLocale = locale ? (OG_LOCALES[locale] ?? 'ja_JP') : 'ja_JP';
   return {
     title: metaTitle,
     description,
@@ -89,7 +86,7 @@ export function buildFormatMetadataI18n(label: string, description: string, page
       description,
       url: pageUrl,
       siteName: SITE_NAME,
-      locale: OG_LOCALES[locale] ?? 'ja_JP',
+      locale: ogLocale,
     },
     twitter: {
       card: 'summary',
@@ -102,6 +99,16 @@ export function buildFormatMetadataI18n(label: string, description: string, page
   };
 }
 
+/** @deprecated buildFormatMetadata(label, description, pageUrl, locale, title) を使用してください */
+export function buildFormatMetadataI18n(
+  label: string,
+  description: string,
+  pageUrl: string,
+  locale: string,
+  title?: string,
+): Metadata {
+  return buildFormatMetadata(label, description, pageUrl, locale, title);
+}
 
 export const THRESHOLD_OPTIONS: Record<ThresholdKey, { values: number[]; default: number }> = {
   common: {
