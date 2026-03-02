@@ -17,7 +17,9 @@ function fetchPriceMovers(): PriceMoverData {
 }
 
 export function generateStaticParams() {
-  return PERIOD_KEYS.map((period) => ({ period }));
+  return routing.locales.flatMap((locale) =>
+    PERIOD_KEYS.map((period) => ({ locale, period }))
+  );
 }
 
 interface PeriodPageProps {

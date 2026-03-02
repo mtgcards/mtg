@@ -2,6 +2,8 @@ import { MetadataRoute } from 'next';
 import { ALL_FORMAT_KEYS, SITE_URL, DEFAULT_FORMAT } from '@/lib/constants';
 import { locales } from '@/i18n/routing';
 
+export const dynamic = 'force-static';
+
 const PRICE_MOVER_PERIODS = ['24h', '7d', '30d', '90d'] as const;
 
 function localeUrls(path: string, priority: number, changeFrequency: MetadataRoute.Sitemap[0]['changeFrequency']): MetadataRoute.Sitemap {
