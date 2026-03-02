@@ -53,7 +53,7 @@ jobs:
       - name: Build & Deploy
         run: npm run deploy
         env:
-          SKIP_PREBUILD: ${{ inputs.run_prebuild && 'false' || 'true' }}
+          SKIP_PREBUILD: 'true'
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
