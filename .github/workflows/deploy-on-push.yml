@@ -50,6 +50,14 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
 
+      # prebuildあり時: 最新データをキャッシュに保存
+      - name: Save generated cache
+        if: ${{ inputs.run_prebuild }}
+        uses: actions/cache/save@v4
+        with:
+          path: src/generated
+          key: generated-${{ runner.os }}-${{ github.run_id }}
+
       - name: Build & Deploy
         run: npm run deploy
         env:
