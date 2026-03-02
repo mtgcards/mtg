@@ -6,13 +6,15 @@ import { ALL_FORMAT_KEYS, SITE_URL, DEFAULT_FORMAT, buildFormatMetadataI18n } fr
 import { isFormatKey } from '@/lib/utils';
 import { redirect } from '@/i18n/navigation';
 import CardPageLayout from '@/components/CardPageLayout';
+import { routing } from '@/i18n/routing';
 
 export function generateStaticParams() {
-  return ALL_FORMAT_KEYS
-    .filter((key) => key !== DEFAULT_FORMAT)
-    .map((format) => ({ format }));
+  return routing.locales.flatMap((locale) =>
+    ALL_FORMAT_KEYS
+      .filter((key) => key !== DEFAULT_FORMAT)
+      .map((format) => ({ locale, format }))
+  );
 }
-
 interface FormatPageProps {
   params: Promise<{ locale: string; format: string }>;
 }
