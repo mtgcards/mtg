@@ -2,10 +2,19 @@ interface WebSiteJsonLdProps {
   siteUrl: string;
   siteName: string;
   description?: string;
+  locale?: string;
 }
 
-export function WebSiteJsonLd({ siteUrl, siteName, description }: WebSiteJsonLdProps) {
+const LANGUAGE_MAP: Record<string, string> = {
+  ja: 'Japanese',
+  en: 'English',
+  fr: 'French',
+  de: 'German',
+};
+
+export function WebSiteJsonLd({ siteUrl, siteName, description, locale = 'ja' }: WebSiteJsonLdProps) {
   const orgId = `${siteUrl}/#organization`;
+  const availableLanguage = LANGUAGE_MAP[locale] ?? 'Japanese';
   const data = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -26,13 +35,13 @@ export function WebSiteJsonLd({ siteUrl, siteName, description }: WebSiteJsonLdP
           '@type': 'ContactPoint',
           url: `${siteUrl}/contact`,
           contactType: 'customer support',
-          availableLanguage: 'Japanese',
+          availableLanguage,
         },
         knowsAbout: [
           'Magic: The Gathering',
-          'トレーディングカードゲーム',
-          'MTGカード価格',
-          'パウパー',
+          'Trading Card Game',
+          'MTG Card Prices',
+          'Pauper',
         ],
       },
     ],

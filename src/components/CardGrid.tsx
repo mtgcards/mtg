@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { SerializedCard, FormatKey, Currency, Shop, ThresholdKey } from '@/lib/types';
 import { DEFAULT_THRESHOLDS, scryfallSetSvgUrl } from '@/lib/constants';
 import { useExchangeRates } from '@/lib/exchange';
@@ -41,6 +42,7 @@ function groupBySet(cards: SerializedCard[]): SetGroup[] {
 }
 
 export default function CardGrid({ cards, format }: CardGridProps) {
+  const t = useTranslations('cards');
   const [thresholds, setThresholds] = useState<Record<ThresholdKey, number>>(() => ({ ...DEFAULT_THRESHOLDS }));
   const [currency, setCurrency] = useState<Currency>('USD');
   const [shop, setShop] = useState<Shop>('hareruya');
@@ -112,7 +114,7 @@ export default function CardGrid({ cards, format }: CardGridProps) {
       </div>
 
       {filteredCards.length > 0 && (
-        <p className="end-message">すべてのカードを表示しました</p>
+        <p className="end-message">{t('allDisplayed')}</p>
       )}
 
       <BackToTop />

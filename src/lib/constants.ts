@@ -72,6 +72,36 @@ export function buildFormatMetadata(label: string, description: string, pageUrl:
   };
 }
 
+const OG_LOCALES: Record<string, string> = {
+  ja: 'ja_JP',
+  en: 'en_US',
+  fr: 'fr_FR',
+  de: 'de_DE',
+};
+
+export function buildFormatMetadataI18n(label: string, description: string, pageUrl: string, locale: string, title?: string): Metadata {
+  const metaTitle = title ?? pageTitle(label);
+  return {
+    title: metaTitle,
+    description,
+    openGraph: {
+      title: metaTitle,
+      description,
+      url: pageUrl,
+      siteName: SITE_NAME,
+      locale: OG_LOCALES[locale] ?? 'ja_JP',
+    },
+    twitter: {
+      card: 'summary',
+      title: metaTitle,
+      description,
+    },
+    alternates: {
+      canonical: pageUrl,
+    },
+  };
+}
+
 
 export const THRESHOLD_OPTIONS: Record<ThresholdKey, { values: number[]; default: number }> = {
   common: {

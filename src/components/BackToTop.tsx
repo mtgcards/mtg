@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 export default function BackToTop() {
+  const t = useTranslations('common');
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -21,7 +23,7 @@ export default function BackToTop() {
     <button
       className={`back-to-top${visible ? '' : ' hidden'}`}
       onClick={scrollToTop}
-      aria-label="ページ上部へ戻る"
+      aria-label={t('backToTop')}
     >
       ▲
     </button>

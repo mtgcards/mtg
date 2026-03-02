@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
 import { YouTubeVideo } from '@/lib/types';
 import BackToTop from './BackToTop';
 
@@ -10,18 +11,29 @@ interface VideoGridProps {
 
 const PAGE_SIZE = 50;
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('ja-JP', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
+const DATE_LOCALES: Record<string, string> = {
+  ja: 'ja-JP',
+  en: 'en-US',
+  fr: 'fr-FR',
+  de: 'de-DE',
+};
 
 export default function VideoGrid({ videos }: VideoGridProps) {
+  const t = useTranslations('videos');
+  const locale = useLocale();
   const [shown, setShown] = useState(PAGE_SIZE);
   const [activeVideo, setActiveVideo] = useState<YouTubeVideo | null>(null);
   const modalRef = useRef<HTMLDialogElement>(null);
+
+  const dateLocale = DATE_LOCALES[locale] ?? 'ja-JP';
+
+  const formatDate = useCallback((dateStr: string): string => {
+    return new Date(dateStr).toLocaleDateString(dateLocale, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }, [dateLocale]);
 
   const visibleVideos = videos.slice(0, shown);
   const hasMore = shown < videos.length;
@@ -49,7 +61,7 @@ export default function VideoGrid({ videos }: VideoGridProps) {
   }, []);
 
   if (videos.length === 0) {
-    return <div className="end-message">動画が見つかりませんでした。</div>;
+    return <div className="end-message">{t('noVideos')}</div>;
   }
 
   return (
@@ -75,7 +87,7 @@ export default function VideoGrid({ videos }: VideoGridProps) {
                   </time>
                   {video.viewCount != null && (
                     <span className="video-views">
-                      {video.viewCount.toLocaleString('ja-JP')} 回視聴
+                      {t('views', { count: video.viewCount.toLocaleString(dateLocale) })}
                     </span>
                   )}
                 </div>
@@ -89,7 +101,7 @@ export default function VideoGrid({ videos }: VideoGridProps) {
               className="load-more-btn"
               onClick={() => setShown((prev) => prev + PAGE_SIZE)}
             >
-              もっと見る
+              {t('loadMore')}
             </button>
           </div>
         )}
@@ -103,7 +115,7 @@ export default function VideoGrid({ videos }: VideoGridProps) {
         onClick={handleDialogClick}
       >
         <div className="video-modal-inner">
-          <button className="video-modal-close" onClick={closeModal} aria-label="閉じる">✕</button>
+          <button className="video-modal-close" onClick={closeModal} aria-label={t('close')}>✕</button>
           {activeVideo && (
             <>
               <div className="video-modal-player">
@@ -123,7 +135,7 @@ export default function VideoGrid({ videos }: VideoGridProps) {
                   </time>
                   {activeVideo.viewCount != null && (
                     <span className="video-views">
-                      {activeVideo.viewCount.toLocaleString('ja-JP')} 回視聴
+                      {t('views', { count: activeVideo.viewCount.toLocaleString(dateLocale) })}
                     </span>
                   )}
                 </div>
@@ -133,7 +145,7 @@ export default function VideoGrid({ videos }: VideoGridProps) {
                   rel="noopener noreferrer"
                   className="video-modal-yt-link"
                 >
-                  YouTubeで見る
+                  {t('watchOnYoutube')}
                 </a>
               </div>
             </>

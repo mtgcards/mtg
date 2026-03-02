@@ -1,10 +1,10 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import {
   THRESHOLD_OPTIONS,
   THRESHOLD_VISIBILITY,
   DEFAULT_THRESHOLD_KEYS,
-  THRESHOLD_LABELS,
 } from '@/lib/constants';
 import { FormatKey, Currency, Shop, ThresholdKey } from '@/lib/types';
 import CurrencyShopSelector from './CurrencyShopSelector';
@@ -28,6 +28,7 @@ export default function ThresholdBar({
   onCurrencyChange,
   onShopChange,
 }: ThresholdBarProps) {
+  const t = useTranslations('thresholds');
   const visibleKeys = THRESHOLD_VISIBILITY[format] || DEFAULT_THRESHOLD_KEYS;
 
   return (
@@ -37,7 +38,7 @@ export default function ThresholdBar({
         const opts = THRESHOLD_OPTIONS[key];
         return (
           <label key={key}>
-            {THRESHOLD_LABELS[key]}
+            {t(key)}
             <select
               value={thresholds[key]}
               onChange={(e) => onThresholdChange(key, parseFloat(e.target.value))}

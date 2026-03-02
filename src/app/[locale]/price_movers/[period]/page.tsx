@@ -2,8 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { SITE_URL, SITE_NAME, buildFormatMetadata } from '@/lib/constants';
-import { PriceMoverData, PriceMoverPeriod, PERIOD_KEYS, PERIOD_LABELS, isPriceMoverPeriod } from '@/lib/price-movers';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { SITE_URL, buildFormatMetadataI18n } from '@/lib/constants';
+import { PriceMoverData, PERIOD_KEYS, isPriceMoverPeriod } from '@/lib/price-movers';
 import TabBar from '@/components/TabBar';
 import PriceMoversGrid from '@/components/PriceMoversGrid';
 import { BreadcrumbJsonLd } from '@/components/JsonLd';
@@ -19,38 +20,48 @@ export function generateStaticParams() {
 }
 
 interface PeriodPageProps {
-  params: Promise<{ period: string }>;
+  params: Promise<{ locale: string; period: string }>;
 }
 
 export async function generateMetadata({ params }: PeriodPageProps): Promise<Metadata> {
-  const { period } = await params;
+  const { locale, period } = await params;
   if (!isPriceMoverPeriod(period)) return {};
 
-  const label = `値上がり（${PERIOD_LABELS[period]}）`;
-  const description = `MTGのコモン・アンコモンカードで${PERIOD_LABELS[period]}の値上がりが大きいカードをランキング表示。`;
+  const t = await getTranslations({ locale, namespace: 'priceMovers.periods' });
+  const tp = await getTranslations({ locale, namespace: 'priceMoversPage' });
+
+  const periodLabel = t(period);
+  const label = tp('label', { period: periodLabel });
+  const description = tp('description', { period: periodLabel });
   const pageUrl = `${SITE_URL}/price_movers/${period}`;
-  return buildFormatMetadata(label, description, pageUrl);
+  return buildFormatMetadataI18n(label, description, pageUrl, locale);
 }
 
 export default async function PriceMoversPeriodPage({ params }: PeriodPageProps) {
-  const { period } = await params;
+  const { locale, period } = await params;
+  setRequestLocale(locale);
   if (!isPriceMoverPeriod(period)) notFound();
 
   const data = fetchPriceMovers();
   const pageUrl = `${SITE_URL}/price_movers/${period}`;
 
+  const t = await getTranslations({ locale, namespace: 'priceMovers.periods' });
+  const tn = await getTranslations({ locale, namespace: 'nav' });
+  const tp = await getTranslations({ locale, namespace: 'priceMoversPage' });
+  const ts = await getTranslations({ locale, namespace: 'site' });
+
   return (
     <main>
       <BreadcrumbJsonLd
         items={[
-          { name: 'ホーム', url: SITE_URL },
-          { name: '値上がり', url: `${SITE_URL}/price_movers/7d` },
-          { name: PERIOD_LABELS[period], url: pageUrl },
+          { name: tn('home'), url: SITE_URL },
+          { name: tp('breadcrumb'), url: `${SITE_URL}/price_movers/7d` },
+          { name: t(period), url: pageUrl },
         ]}
       />
       <div className="top-bar">
         <div className="header-compact">
-          <h1>{SITE_NAME}</h1>
+          <h1>{ts('name')}</h1>
         </div>
         <TabBar activeFormat="price_movers" />
         <PriceMoversGrid data={data} period={period} />

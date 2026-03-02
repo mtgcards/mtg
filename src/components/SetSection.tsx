@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { SerializedCard, Currency, Shop, ExchangeRates } from '@/lib/types';
 import { scryfallSetSvgUrl } from '@/lib/constants';
 import { getSetSectionId } from '@/lib/utils';
@@ -24,7 +25,8 @@ export default function SetSection({
   shop,
   exchangeRates,
 }: SetSectionProps) {
-  const year = releasedAt ? releasedAt.substring(0, 4) + '年' : '';
+  const t = useTranslations('common');
+  const year = releasedAt ? t('year', { year: releasedAt.substring(0, 4) }) : '';
   const label = setName + (year ? ` (${year})` : '');
   const sectionId = getSetSectionId(setName);
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { SerializedCard, Currency, Shop, ExchangeRates } from '@/lib/types';
 import { getCardLinkUrl, formatPrice } from '@/lib/utils';
 
@@ -11,6 +12,7 @@ interface CardItemProps {
 }
 
 export default function CardItem({ card, currency, shop, exchangeRates }: CardItemProps) {
+  const t = useTranslations('cards');
   const priceText = formatPrice(card, currency, exchangeRates);
   const href = getCardLinkUrl(card.name, shop);
 
@@ -35,7 +37,7 @@ export default function CardItem({ card, currency, shop, exchangeRates }: CardIt
       <div className="card-info">
         <h3 className="card-name">{card.name}</h3>
         <p className={priceText ? 'card-price' : 'card-price unavailable'}>
-          {priceText || '価格情報なし'}
+          {priceText || t('noPrice')}
         </p>
       </div>
     </a>

@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { Shop, Currency } from '@/lib/types';
 import { useExchangeRates } from '@/lib/exchange';
 import { getCardLinkUrl, convertFromUSD } from '@/lib/utils';
-import { PriceMoverData, PriceMoverPeriod, PERIOD_KEYS, PERIOD_LABELS, getPriceChange } from '@/lib/price-movers';
+import { PriceMoverData, PriceMoverPeriod, PERIOD_KEYS, getPriceChange } from '@/lib/price-movers';
 import CurrencyShopSelector from './CurrencyShopSelector';
 import BackToTop from './BackToTop';
 
@@ -15,6 +16,9 @@ interface PriceMoversGridProps {
 }
 
 export default function PriceMoversGrid({ data, period }: PriceMoversGridProps) {
+  const t = useTranslations('priceMovers');
+  const tp = useTranslations('priceMovers.periods');
+  const tc = useTranslations('cards');
   const [shop, setShop] = useState<Shop>('hareruya');
   const [currency, setCurrency] = useState<Currency>('USD');
   const exchangeRates = useExchangeRates();
@@ -31,7 +35,7 @@ export default function PriceMoversGrid({ data, period }: PriceMoversGridProps) 
               href={`/price_movers/${p}`}
               className={`period-tab${p === period ? ' active' : ''}`}
             >
-              {PERIOD_LABELS[p]}
+              {tp(p)}
             </Link>
           ))}
         </div>
@@ -44,12 +48,12 @@ export default function PriceMoversGrid({ data, period }: PriceMoversGridProps) 
       </div>
 
       {cards.length === 0 ? (
-        <p className="end-message">該当するカードが見つかりませんでした</p>
+        <p className="end-message">{t('noResults')}</p>
       ) : (
         <div className="card-grid">
           <div className="set-section">
             <h2 className="set-title">
-              {PERIOD_LABELS[period]}の値上がり Top {cards.length}
+              {t('topN', { period: tp(period), count: cards.length })}
             </h2>
             <div className="set-card-grid">
               {cards.map((card, i) => {
@@ -89,7 +93,7 @@ export default function PriceMoversGrid({ data, period }: PriceMoversGridProps) 
       )}
 
       {cards.length > 0 && (
-        <p className="end-message">すべてのカードを表示しました</p>
+        <p className="end-message">{tc('allDisplayed')}</p>
       )}
 
       <BackToTop />

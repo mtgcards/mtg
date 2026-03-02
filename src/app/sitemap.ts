@@ -1,55 +1,43 @@
 import { MetadataRoute } from 'next';
 import { ALL_FORMAT_KEYS, SITE_URL, DEFAULT_FORMAT } from '@/lib/constants';
+import { locales } from '@/i18n/routing';
 
 const PRICE_MOVER_PERIODS = ['24h', '7d', '30d', '90d'] as const;
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const formatUrls: MetadataRoute.Sitemap = ALL_FORMAT_KEYS
-    .filter((key) => key !== DEFAULT_FORMAT)
-    .map((key) => ({
-      url: `${SITE_URL}/${key}`,
-      changeFrequency: 'daily',
-      priority: 0.8,
-    }));
-
-  const priceMoverUrls: MetadataRoute.Sitemap = PRICE_MOVER_PERIODS.map((period) => ({
-    url: `${SITE_URL}/price_movers/${period}`,
-    changeFrequency: 'daily',
-    priority: 0.7,
+function localeUrls(path: string, priority: number, changeFrequency: MetadataRoute.Sitemap[0]['changeFrequency']): MetadataRoute.Sitemap {
+  return locales.map((locale) => ({
+    url: `${SITE_URL}/${locale}${path}`,
+    changeFrequency,
+    priority,
   }));
+}
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const homeUrls = localeUrls('', 1.0, 'weekly');
+
+  const formatUrls = ALL_FORMAT_KEYS
+    .filter((key) => key !== DEFAULT_FORMAT)
+    .flatMap((key) => localeUrls(`/${key}`, 0.8, 'daily'));
+
+  const priceMoverIndexUrls = localeUrls('/price_movers', 0.7, 'daily');
+
+  const priceMoverUrls = PRICE_MOVER_PERIODS.flatMap((period) =>
+    localeUrls(`/price_movers/${period}`, 0.7, 'daily'),
+  );
+
+  const videoUrls = localeUrls('/videos', 0.7, 'daily');
+  const aboutUrls = localeUrls('/about', 0.5, 'monthly');
+  const contactUrls = localeUrls('/contact', 0.5, 'monthly');
+  const privacyUrls = localeUrls('/privacy', 0.3, 'monthly');
 
   return [
-    {
-      url: SITE_URL,
-      changeFrequency: 'weekly',
-      priority: 1.0,
-    },
+    ...homeUrls,
     ...formatUrls,
-    {
-      url: `${SITE_URL}/price_movers`,
-      changeFrequency: 'daily',
-      priority: 0.7,
-    },
+    ...priceMoverIndexUrls,
     ...priceMoverUrls,
-    {
-      url: `${SITE_URL}/videos`,
-      changeFrequency: 'daily',
-      priority: 0.7,
-    },
-    {
-      url: `${SITE_URL}/about`,
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${SITE_URL}/contact`,
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${SITE_URL}/privacy`,
-      changeFrequency: 'monthly',
-      priority: 0.3,
-    },
+    ...videoUrls,
+    ...aboutUrls,
+    ...contactUrls,
+    ...privacyUrls,
   ];
 }
