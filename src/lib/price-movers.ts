@@ -30,6 +30,7 @@ export function getPriceChange(card: PriceMoverCard, period: PriceMoverPeriod): 
     case '7d':  return card.priceChange7d;
     case '30d': return card.priceChange30d;
     case '90d': return card.priceChange90d;
+    default:    return null;
   }
 }
 

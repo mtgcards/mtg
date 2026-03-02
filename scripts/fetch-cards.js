@@ -14,29 +14,9 @@ const { mkdir, writeFile } = require('node:fs/promises');
 const { parser } = require('stream-json');
 const { streamArray } = require('stream-json/streamers/StreamArray');
 
-// ---- Constants (mirrors src/lib/constants.ts and src/lib/scryfall.ts) ----
+const { isExcludedCard } = require('./shared');
 
-const EXCLUDED_SET_CODES = new Set([
-  'lea', 'leb', 'unk', '30a', 'ced', 'cei', 'ptc',
-  'sld', 'slp', 'slc', 'slu', 'pssc',
-]);
-
-const EXCLUDED_SETS = new Set([
-  'Foreign Black Border', 'Summer Magic / Edgar', 'Beatdown Box Set',
-  'Battle Royale Box Set', 'Media and Collaboration Promos', 'Unglued',
-  'Renaissance', 'Introductory Two-Player Set', 'MicroProse Promos',
-  'Fourth Edition Foreign Black Border', 'Unlimited Edition', 'Rinascimento',
-  'Salvat 2005', 'Salvat 2011', 'Planechase Planes', 'Planechase',
-  'Archenemy Schemes', 'Archenemy', 'DCI Promos', 'New Phyrexia Promos',
-  'Planechase 2012 Planes', 'Planechase 2012', 'Face the Hydra',
-  'Battle the Horde', 'M15 Prerelease Challenge', 'Planechase Anthology Planes',
-  'Planechase Anthology', 'Commander Anthology Tokens',
-  'Commander Anthology Volume II Tokens', 'Commander Anthology Volume II',
-  'Core Set 2020 Promos', 'The List',
-  'Adventures in the Forgotten Realms Tokens', 'Mystery Booster 2',
-]);
-
-const EXCLUDED_PREFIXES = ['Duel Decks:', 'Duel Decks Anthology:', 'Archenemy:'];
+// ---- Constants ----
 
 const DATE_RANGES = {
   y1995_2003: { start: '1995-01-01', end: '2003-12-31' },
@@ -48,12 +28,6 @@ const DATE_RANGES = {
 };
 
 // ---- Helpers ----
-
-function isExcluded(card) {
-  if (EXCLUDED_SET_CODES.has(card.set)) return true;
-  if (EXCLUDED_SETS.has(card.set_name)) return true;
-  return EXCLUDED_PREFIXES.some((p) => card.set_name.startsWith(p));
-}
 
 function usdPrice(card) {
   return card.prices.usd ? parseFloat(card.prices.usd) : null;
@@ -92,7 +66,7 @@ function serialize(card, isFoil) {
 }
 
 function categorize(card, buckets) {
-  if (isExcluded(card) || card.border_color === 'gold') return;
+  if (isExcludedCard(card) || card.border_color === 'gold') return;
 
   const typeLine = card.type_line?.toLowerCase() ?? '';
 

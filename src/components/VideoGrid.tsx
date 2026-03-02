@@ -10,6 +10,14 @@ interface VideoGridProps {
 
 const PAGE_SIZE = 50;
 
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
 export default function VideoGrid({ videos }: VideoGridProps) {
   const [shown, setShown] = useState(PAGE_SIZE);
   const [activeVideo, setActiveVideo] = useState<YouTubeVideo | null>(null);
@@ -63,11 +71,7 @@ export default function VideoGrid({ videos }: VideoGridProps) {
                 <p className="video-channel">{video.channelTitle}</p>
                 <div className="video-meta">
                   <time className="video-date" dateTime={video.publishedAt}>
-                    {new Date(video.publishedAt).toLocaleDateString('ja-JP', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
+                    {formatDate(video.publishedAt)}
                   </time>
                   {video.viewCount != null && (
                     <span className="video-views">
@@ -115,11 +119,7 @@ export default function VideoGrid({ videos }: VideoGridProps) {
                 <div className="video-meta">
                   <span className="video-channel">{activeVideo.channelTitle}</span>
                   <time className="video-date" dateTime={activeVideo.publishedAt}>
-                    {new Date(activeVideo.publishedAt).toLocaleDateString('ja-JP', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
+                    {formatDate(activeVideo.publishedAt)}
                   </time>
                   {activeVideo.viewCount != null && (
                     <span className="video-views">
