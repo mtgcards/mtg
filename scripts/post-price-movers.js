@@ -20,34 +20,14 @@ const X_ACCESS_TOKEN_SECRET = process.env.X_ACCESS_TOKEN_SECRET || '';
 
 // ---- Prompt variation helpers ----
 
-const PERSONAS = [
-  'MTG歴20年のベテランプレイヤー。池田と呼ばれ、見てきたカードの歴史を語るのが得意。値上がりには「これは来るばい」と直感で反応する。',
-  'MTG始めて3ヶ月の初心者。カード名を読むたび「このカードなにれるの？」と新鮮な目で語る。価格騰起に純粋に驚いている。',
-  '昭和生まれのおじさんコレクター。そのカードの昔のトーナメントや値上がりの記憶をぎゅっと語る。@syowamtgの本従キャラ。',
-  'カード値段の動きに目が遠い錢金学者タイプ。「なぜ今上がっているのか」を分析し、技巧・リプリント・現店在庫などの要因を推測して語る。',
-  'トレードグラインダー。「今買い時か」「待ちか」をはっきり判断する。少し口が悪くても結果が全てお厳しいスタイル。',
-];
-
 const STYLES = [
-  '箇条書きでサクッと伝える簡潔スタイル。無駄な言葉は一切不要。',
-  '絵文字やユニークな表現を活用した温かみのあるスタイル。',
-  '速善感や気軽なジョークを交えた明るいスタイル。',
-  '詩的・浮かびある表現で、カードへの愛を語るスタイル。',
+  '箇条書きでサクッと伝える簡潔スタイル。',
   'ニュース記事のような客観的・報告スタイル。',
-];
-
-const DAY_THEMES = [
-  '「週明け」を背に今週のカード定点チェックを問いかける', // 日
-  '「週明け」を背に今週のカード定点チェックを問いかける', // 月
-  '「火曜日がはじまった」と言いたくなる気分で価格を届ける', // 火
-  '「水曜日の山」を越える気分で、笑いを混ぜて価格情報を届ける', // 水
-  '「敬老の木曜日」。週平日の疑労を忠罪にしながらMTG価格が気になる', // 木
-  '「軽やかな金曜日」。週末値引き前に確認したい人向け', // 金
-  '「土曜日の大会デイ」。トーナメントまえにカード相場をチェック', // 土
+  '絵文字やユニークな表現を活用したスタイル。',
 ];
 
 // period → 日本語ラベルと値動キーのマッピング
- const PERIOD_META = {
+const PERIOD_META = {
   '24h': { label: '24時間', changeKey: 'priceChange24hr' },
   '7d':  { label: '7日間',  changeKey: 'priceChange7d' },
   '30d': { label: '30日間', changeKey: 'priceChange30d' },
@@ -60,17 +40,14 @@ function pickRandom(arr) {
 
 // 期間とカードをランダム選択
 function pickPeriodAndCard(data) {
-  // カードが存在する期間のみ候補にする
   const available = Object.keys(PERIOD_META).filter(
     (p) => Array.isArray(data[p]) && data[p].length > 0,
   );
   if (available.length === 0) return null;
 
-  // 期間をランダムに選択
   const period = pickRandom(available);
   const { changeKey } = PERIOD_META[period];
 
-  // 選んだ期間でプラス値動のカードのみ候補にし、先頭カードを返す
   const card = (data[period] ?? []).find((c) => (c[changeKey] ?? 0) > 0);
   if (!card) return null;
 
@@ -93,21 +70,16 @@ async function generateTweetText(card, period) {
     card.flavorText ? `フレーバーテキスト: ${card.flavorText}` : null,
   ].filter(Boolean).join('\n');
 
-  const persona = pickRandom(PERSONAS);
   const style = pickRandom(STYLES);
-  const dayTheme = DAY_THEMES[new Date().getDay()];
 
   console.log(`[post-price-movers] Period: ${period} (${periodLabel})`);
-  console.log(`[post-price-movers] Persona: ${persona.slice(0, 24)}...`);
   console.log(`[post-price-movers] Style: ${style}`);
-  console.log(`[post-price-movers] Day theme: ${dayTheme}`);
 
   const prompt = [
-    `あなたは次のペルソナです: ${persona}`,
+    'あなたはMagic: The Gatheringのコモン・アンコモンカードの価格動向に詳しい日本語Xアカウント @syowamtg の中の人です。',
     '',
     `以下の「直近${periodLabel}値上がり」カードデータをもとに、X(旧Twitter)に投稿する日本語ツイートを1件作成してください。`,
-    '',
-    `「${dayTheme}」の雰囲気を前提に、「${style}」で書いてください。`,
+    `「${style}」で書いてください。`,
     '',
     '【ルール】',
     '- カード名は英語のままでOK',
