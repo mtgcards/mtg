@@ -18,30 +18,77 @@ const X_API_KEY_SECRET = process.env.X_API_KEY_SECRET || '';
 const X_ACCESS_TOKEN = process.env.X_ACCESS_TOKEN || '';
 const X_ACCESS_TOKEN_SECRET = process.env.X_ACCESS_TOKEN_SECRET || '';
 
+// ---- Prompt variation helpers ----
+
+const PERSONAS = [
+  'MTG歴20年のベテランプレイヤー。池田と呼ばれ、見てきたカードの歴史を語るのが得意。値上がりには「これは来るばい」と直感で反応する。',
+  'MTG始めて3ヶ月の初心者。カード名を読むたび「このカードなにれるの？」と新鮮な目で語る。価格騰起に純粋に驚いている。',
+  '昭和生まれのおじさんコレクター。そのカードの昔のトーナメントや値上がりの記憶をぎゅっと語る。@syowamtgの本従キャラ。',
+  'カード値段の動きに目が遠い錢金学者タイプ。「なぜ今上がっているのか」を分析し、技巧・リプリント・現店在庫などの要因を推測して語る。',
+  'トレードグラインダー。「今買い時か」「待ちか」をはっきり判断する。少し口が悪くても結果が全てお厳しいスタイル。',
+];
+
+const STYLES = [
+  '箇条書きでサクッと伝える簡潔スタイル。無駄な言葉は一切不要。',
+  '絵文字やユニークな表現を活用した温かみのあるスタイル。',
+  '速善感や気軽なジョークを交えた明るいスタイル。',
+  '詩的・浮かびある表現で、カードへの愛を語るスタイル。',
+  'ニュース記事のような客観的・報告スタイル。',
+];
+
+const DAY_THEMES = [
+  '「週明け」を背に今週のカード定点チェックを問いかける', // 日
+  '「週明け」を背に今週のカード定点チェックを問いかける', // 月
+  '「火曜日がはじまった」と言いたくなる気分で価格を届ける', // 火
+  '「水曜日の山」を越える気分で、笑いを混ぜて価格情報を届ける', // 水
+  '「敬老の木曜日」。週平日の疑労を忠罪にしながらMTG価格が気になる', // 木
+  '「軽やかな金曜日」。週末値引き前に確認したい人向け', // 金
+  '「土曜日の大会デイ」。トーナメントまえにカード相場をチェック', // 土
+];
+
+function pickRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
 // ---- Gemini ----
 
 async function generateTweetText(card) {
   const change24h = card.priceChange24hr != null ? `+$${card.priceChange24hr.toFixed(2)}` : 'N/A';
-  const cardInfo = `${card.name} (${card.rarity}) — $${card.price.toFixed(2)} (24h: ${change24h}) [${card.setName}]`;
+  const cardInfo = [
+    `カード名: ${card.name}`,
+    `レアリティ: ${card.rarity}`,
+    `セット: ${card.setName}`,
+    `現在値段: $${card.price.toFixed(2)}`,
+    `24h変動: ${change24h}`,
+    card.flavorText ? `フレーバーテキスト: ${card.flavorText}` : null,
+  ].filter(Boolean).join('\n');
+
+  const persona = pickRandom(PERSONAS);
+  const style = pickRandom(STYLES);
+  const dayTheme = DAY_THEMES[new Date().getDay()];
+
+  console.log(`[post-price-movers] Persona: ${persona.slice(0, 24)}...`);
+  console.log(`[post-price-movers] Style: ${style}`);
+  console.log(`[post-price-movers] Day theme: ${dayTheme}`);
 
   const prompt = [
-    'あなたはMagic: The Gatheringのコモン・アンコモンカードの価格動向に詳しい',
-    '日本語Xアカウント @syowamtg の中の人です。',
+    `あなたは次のペルソナです: ${persona}`,
     '',
-    '以下の24時間値上がりカードデータをもとに、MTGコレクターに刺さる',
-    '魅力的なツイートを日本語で1件作成してください。',
+    '以下の24時間値上がりカードデータをもとに、X(旧Twitter)に投稿する日本語ツイートを1件作成してください。',
     '',
-    '【条件】',
-    '- 冒頭に「🔥 今日の注目値上がりカード」という引きのある一文を入れる',
-    '- カード名は英語のまま、セット名（括弧内）は省略してOK',
-    '- 価格と上昇額を「$5.00 → +$0.60📈」のように視覚的に表現する',
-    '- 「じわじわ上がってる」「見逃せない」などの温度感のある言葉を1つ入れる',
-    '- 全体で220文字以内に収める',
+    `「${dayTheme}」の雰囲気を前提に、「${style}」で書いてください。`,
+    '',
+    '【ルール】',
+    '- カード名は英語のままでOK',
+    '- 価格の表現方法は自由（数字や絵文字の使い方はお任せ）',
+    '- #昭和MTG は必ず入れる。その他のハッシュタグは最大2個まで自由に選ぶ',
+    '- 280文字以内に収める（Xの上限）',
     '- ツイート本文のみ出力（前置き・説明文は不要）',
+    card.flavorText ? '- フレーバーテキストを引用してもよい（しなくてもよい）' : null,
     '',
     '【カードデータ】',
     cardInfo,
-  ].join('\n');
+  ].filter(Boolean).join('\n');
 
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GOOGLE_API_KEY}`,
@@ -50,7 +97,7 @@ async function generateTweetText(card) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { maxOutputTokens: 300, temperature: 0.9 },
+        generationConfig: { maxOutputTokens: 300, temperature: 1.0 },
       }),
     },
   );
@@ -120,9 +167,6 @@ function buildOAuthHeader(method, url, bodyParams) {
 }
 
 // ---- Media Upload (v1.1) ----
-// OAuth署名には media_data を含めない。
-// 常識的に、巨大なバイナリデータはOAuth署名パラメータから除外し、
-// Content-Type: multipart/form-data で送信する。
 
 async function fetchImageBuffer(imageUrl) {
   try {
@@ -142,23 +186,15 @@ async function fetchImageBuffer(imageUrl) {
 async function uploadMedia(imageBuffer, mimeType = 'image/jpeg') {
   const uploadUrl = 'https://upload.twitter.com/1.1/media/upload.json';
 
-  // OAuth署名にはボディパラメータを一切含めない（multipartのため）
   const oauthHeader = buildOAuthHeader('POST', uploadUrl, {});
 
-  // multipart/form-data で送信
-  const FormData = (await import('node:buffer')).Blob ? globalThis.FormData : null;
-
-  // Node 18+のネイティブ FormData を使用
   const form = new FormData();
   form.append('media', new Blob([imageBuffer], { type: mimeType }));
   form.append('media_category', 'tweet_image');
 
   const res = await fetch(uploadUrl, {
     method: 'POST',
-    headers: {
-      Authorization: oauthHeader,
-      // Content-Type は FormData が自動設定するので指定不要
-    },
+    headers: { Authorization: oauthHeader },
     body: form,
   });
 
@@ -229,7 +265,6 @@ async function main() {
 
   console.log(`[post-price-movers] Top card: ${card.name}: $${card.price} (+$${card.priceChange24hr?.toFixed(2)})  image: ${card.imageUrl ?? 'none'}`);
 
-  // Upload card image via multipart/form-data
   const mediaIds = [];
   if (card.imageUrl) {
     console.log(`[post-price-movers] Fetching image for ${card.name}...`);
