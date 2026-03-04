@@ -2,7 +2,7 @@
 
 /**
  * Generates a tweet about MTG price movers using Gemini and posts to @syowamtg.
- * Reads src/generated/price-movers.json (24h period, top 1 card).
+ * Reads src/generated/price-movers.json and randomly picks a period (24h/7d/30d/90d) and card.
  * Attaches 1 card image via POST /1.1/media/upload.
  *
  * Required env vars:
@@ -37,29 +37,59 @@ const STYLES = [
 ];
 
 const DAY_THEMES = [
-  '「週明け」に今週のカード定点チェックを問いかける', // 日
-  '「週明け」に今週のカード定点チェックを問いかける', // 月
-  '「火曜日の山」を越える気分で価格情報を届ける', // 火
-  '「水曜日の島」まで価格を届ける', // 水
-  '「森の木曜日」エルフの森を歩きながらMTG価格を届ける', // 木
-  '「マルチカラーの金曜日」。週末値引き前に確認したい人向け', // 金
+  '「週明け」を背に今週のカード定点チェックを問いかける', // 日
+  '「週明け」を背に今週のカード定点チェックを問いかける', // 月
+  '「火曜日がはじまった」と言いたくなる気分で価格を届ける', // 火
+  '「水曜日の山」を越える気分で、笑いを混ぜて価格情報を届ける', // 水
+  '「敬老の木曜日」。週平日の疑労を忠罪にしながらMTG価格が気になる', // 木
+  '「軽やかな金曜日」。週末値引き前に確認したい人向け', // 金
   '「土曜日の大会デイ」。トーナメントまえにカード相場をチェック', // 土
 ];
+
+// period → 日本語ラベルと値動キーのマッピング
+ const PERIOD_META = {
+  '24h': { label: '24時間', changeKey: 'priceChange24hr' },
+  '7d':  { label: '7日間',  changeKey: 'priceChange7d' },
+  '30d': { label: '30日間', changeKey: 'priceChange30d' },
+  '90d': { label: '90日間', changeKey: 'priceChange90d' },
+};
 
 function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+// 期間とカードをランダム選択
+function pickPeriodAndCard(data) {
+  // カードが存在する期間のみ候補にする
+  const available = Object.keys(PERIOD_META).filter(
+    (p) => Array.isArray(data[p]) && data[p].length > 0,
+  );
+  if (available.length === 0) return null;
+
+  // 期間をランダムに選択
+  const period = pickRandom(available);
+  const { changeKey } = PERIOD_META[period];
+
+  // 選んだ期間でプラス値動のカードのみ候補にし、先頭カードを返す
+  const card = (data[period] ?? []).find((c) => (c[changeKey] ?? 0) > 0);
+  if (!card) return null;
+
+  return { period, card };
+}
+
 // ---- Gemini ----
 
-async function generateTweetText(card) {
-  const change24h = card.priceChange24hr != null ? `+$${card.priceChange24hr.toFixed(2)}` : 'N/A';
+async function generateTweetText(card, period) {
+  const { label: periodLabel, changeKey } = PERIOD_META[period];
+  const changeVal = card[changeKey];
+  const changeStr = changeVal != null ? `+$${changeVal.toFixed(2)}` : 'N/A';
+
   const cardInfo = [
     `カード名: ${card.name}`,
     `レアリティ: ${card.rarity}`,
     `セット: ${card.setName}`,
     `現在値段: $${card.price.toFixed(2)}`,
-    `24h変動: ${change24h}`,
+    `値動(直近${periodLabel}): ${changeStr}`,
     card.flavorText ? `フレーバーテキスト: ${card.flavorText}` : null,
   ].filter(Boolean).join('\n');
 
@@ -67,6 +97,7 @@ async function generateTweetText(card) {
   const style = pickRandom(STYLES);
   const dayTheme = DAY_THEMES[new Date().getDay()];
 
+  console.log(`[post-price-movers] Period: ${period} (${periodLabel})`);
   console.log(`[post-price-movers] Persona: ${persona.slice(0, 24)}...`);
   console.log(`[post-price-movers] Style: ${style}`);
   console.log(`[post-price-movers] Day theme: ${dayTheme}`);
@@ -74,15 +105,16 @@ async function generateTweetText(card) {
   const prompt = [
     `あなたは次のペルソナです: ${persona}`,
     '',
-    '以下の24時間値上がりカードデータをもとに、X(旧Twitter)に投稿する日本語ツイートを1件作成してください。',
+    `以下の「直近${periodLabel}値上がり」カードデータをもとに、X(旧Twitter)に投稿する日本語ツイートを1件作成してください。`,
     '',
     `「${dayTheme}」の雰囲気を前提に、「${style}」で書いてください。`,
     '',
     '【ルール】',
     '- カード名は英語のままでOK',
+    `- 集計期間が「${periodLabel}」であることを自然な形で言及する`,
     '- 価格の表現方法は自由（数字や絵文字の使い方はお任せ）',
     '- #昭和MTG は必ず入れる。その他のハッシュタグは最大2個まで自由に選ぶ',
-    '- 220文字以内に収める（Xの上限）',
+    '- 280文字以内に収める（Xの上限）',
     '- ツイート本文のみ出力（前置き・説明文は不要）',
     card.flavorText ? '- フレーバーテキストを引用してもよい（しなくてもよい）' : null,
     '',
@@ -256,14 +288,15 @@ async function main() {
     process.exit(1);
   }
 
-  const card = (data['24h'] ?? []).find((c) => (c.priceChange24hr ?? 0) > 0);
-
-  if (!card) {
-    console.log('[post-price-movers] No 24h price movers found. Skipping post.');
+  const result = pickPeriodAndCard(data);
+  if (!result) {
+    console.log('[post-price-movers] No price movers found in any period. Skipping post.');
     return;
   }
 
-  console.log(`[post-price-movers] Top card: ${card.name}: $${card.price} (+$${card.priceChange24hr?.toFixed(2)})  image: ${card.imageUrl ?? 'none'}`);
+  const { period, card } = result;
+  const { label: periodLabel, changeKey } = PERIOD_META[period];
+  console.log(`[post-price-movers] Selected period: ${period} / card: ${card.name} (${changeKey}: +$${card[changeKey]?.toFixed(2)})  image: ${card.imageUrl ?? 'none'}`);
 
   const mediaIds = [];
   if (card.imageUrl) {
@@ -282,7 +315,7 @@ async function main() {
   }
 
   console.log('[post-price-movers] Generating tweet with Gemini...');
-  const tweetText = await generateTweetText(card);
+  const tweetText = await generateTweetText(card, period);
   console.log(`[post-price-movers] Tweet:\n${tweetText}`);
   console.log(`[post-price-movers] Length: ${tweetText.length} chars`);
 
@@ -291,8 +324,8 @@ async function main() {
   }
 
   console.log(`[post-price-movers] Posting to X with ${mediaIds.length} image(s)...`);
-  const result = await postTweet(tweetText, mediaIds);
-  console.log(`[post-price-movers] Posted! Tweet ID: ${result?.data?.id}`);
+  const tweetResult = await postTweet(tweetText, mediaIds);
+  console.log(`[post-price-movers] Posted! Tweet ID: ${tweetResult?.data?.id}`);
 }
 
 main().catch((err) => {
