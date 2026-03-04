@@ -2,8 +2,8 @@
 
 /**
  * Generates a tweet about MTG price movers using Gemini and posts to @syowamtg.
- * Reads src/generated/price-movers.json (24h period, top 5 cards).
- * Attaches up to 4 card images via POST /1.1/media/upload.
+ * Reads src/generated/price-movers.json (24h period, top 1 card).
+ * Attaches 1 card image via POST /1.1/media/upload.
  *
  * Required env vars:
  *   GOOGLE_API_KEY, X_API_KEY, X_API_KEY_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET
@@ -20,17 +20,9 @@ const X_ACCESS_TOKEN_SECRET = process.env.X_ACCESS_TOKEN_SECRET || '';
 
 // ---- Gemini ----
 
-async function generateTweetText(cards) {
-  const cardList = cards
-    .map((c, i) => {
-      const change24h = c.priceChange24hr != null ? `+$${c.priceChange24hr.toFixed(2)}` : 'N/A';
-      return `${i + 1}. ${c.name} (${c.rarity}) — $${c.price.toFixed(2)} (24h: ${change24h}) [${c.setName}]`;
-    })
-    .join('\n');
-
-  const count = cards.length;
-  const countComment =
-    count <= 2 ? `今日は${count}枚だけど注目度高い！` : count >= 5 ? '今日は豊作🎴' : '';
+async function generateTweetText(card) {
+  const change24h = card.priceChange24hr != null ? `+$${card.priceChange24hr.toFixed(2)}` : 'N/A';
+  const cardInfo = `${card.name} (${card.rarity}) — $${card.price.toFixed(2)} (24h: ${change24h}) [${card.setName}]`;
 
   const prompt = [
     'あなたはMagic: The Gatheringのコモン・アンコモンカードの価格動向に詳しい',
@@ -40,7 +32,7 @@ async function generateTweetText(cards) {
     '魅力的なツイートを日本語で1件作成してください。',
     '',
     '【条件】',
-    `- 冒頭に「今日の値上がり注目カード🔥 ${countComment}」という引きのある一文を入れる`,
+    '- 冒頭に「🔥 今日の注目値上がりカード」という引きのある一文を入れる',
     '- カード名は英語のまま、セット名（括弧内）は省略してOK',
     '- 価格と上昇額を「$5.00 → +$0.60📈」のように視覚的に表現する',
     '- 「じわじわ上がってる」「見逃せない」などの温度感のある言葉を1つ入れる',
@@ -50,7 +42,7 @@ async function generateTweetText(cards) {
     '- ツイート本文のみ出力（前置き・説明文は不要）',
     '',
     '【カードデータ】',
-    cardList,
+    cardInfo,
   ].join('\n');
 
   const res = await fetch(
@@ -153,7 +145,6 @@ async function uploadMedia(base64Data) {
     media_category: 'tweet_image',
   };
 
-  // For form-encoded body, include body params in OAuth signature
   const oauthHeader = buildOAuthHeader('POST', uploadUrl, {
     media_category: 'tweet_image',
   });
@@ -231,40 +222,35 @@ async function main() {
     process.exit(1);
   }
 
-  // Pick top 4 from 24h period with positive price change (max 4 images per tweet)
-  const cards24h = (data['24h'] ?? []).filter((c) => (c.priceChange24hr ?? 0) > 0).slice(0, 4);
+  // Pick top 1 card from 24h period with positive price change
+  const card = (data['24h'] ?? []).find((c) => (c.priceChange24hr ?? 0) > 0);
 
-  if (cards24h.length === 0) {
+  if (!card) {
     console.log('[post-price-movers] No 24h price movers found. Skipping post.');
     return;
   }
 
-  console.log(`[post-price-movers] Top ${cards24h.length} 24h movers:`);
-  cards24h.forEach((c) => console.log(`  - ${c.name}: $${c.price} (+$${c.priceChange24hr?.toFixed(2)})  image: ${c.imageUrl ?? 'none'}`));
+  console.log(`[post-price-movers] Top card: ${card.name}: $${card.price} (+$${card.priceChange24hr?.toFixed(2)})  image: ${card.imageUrl ?? 'none'}`);
 
-  // Upload card images (up to 4)
+  // Upload card image
   const mediaIds = [];
-  for (const card of cards24h) {
-    if (!card.imageUrl) {
-      console.log(`[post-price-movers] No image URL for ${card.name}, skipping.`);
-      continue;
-    }
+  if (card.imageUrl) {
     console.log(`[post-price-movers] Uploading image for ${card.name}...`);
     const base64 = await fetchImageAsBase64(card.imageUrl);
-    if (!base64) continue;
-
-    const mediaId = await uploadMedia(base64);
-    if (mediaId) {
-      mediaIds.push(mediaId);
-      console.log(`[post-price-movers] Uploaded media_id: ${mediaId}`);
+    if (base64) {
+      const mediaId = await uploadMedia(base64);
+      if (mediaId) {
+        mediaIds.push(mediaId);
+        console.log(`[post-price-movers] Uploaded media_id: ${mediaId}`);
+      }
     }
+  } else {
+    console.log(`[post-price-movers] No image URL for ${card.name}, posting without image.`);
   }
-
-  console.log(`[post-price-movers] ${mediaIds.length} image(s) ready.`);
 
   // Generate tweet via Gemini
   console.log('[post-price-movers] Generating tweet with Gemini...');
-  const tweetText = await generateTweetText(cards24h);
+  const tweetText = await generateTweetText(card);
   console.log(`[post-price-movers] Tweet:\n${tweetText}`);
   console.log(`[post-price-movers] Length: ${tweetText.length} chars`);
 
@@ -272,7 +258,7 @@ async function main() {
     console.warn('[post-price-movers] Tweet exceeds 280 chars — posting anyway (X counts differently).');
   }
 
-  // Post to X with images
+  // Post to X
   console.log(`[post-price-movers] Posting to X with ${mediaIds.length} image(s)...`);
   const result = await postTweet(tweetText, mediaIds);
   console.log(`[post-price-movers] Posted! Tweet ID: ${result?.data?.id}`);
