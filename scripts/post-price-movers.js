@@ -3,6 +3,7 @@
 /**
  * Generates a tweet about MTG price movers using Gemini and posts to @syowamtg.
  * Reads src/generated/price-movers.json (24h period, top 5 cards).
+ * Attaches up to 4 card images via POST /1.1/media/upload.
  *
  * Required env vars:
  *   GOOGLE_API_KEY, X_API_KEY, X_API_KEY_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET
@@ -27,17 +28,26 @@ async function generateTweetText(cards) {
     })
     .join('\n');
 
+  const count = cards.length;
+  const countComment =
+    count <= 2 ? `今日は${count}枚だけど注目度高い！` : count >= 5 ? '今日は豊作🎴' : '';
+
   const prompt = [
-    'あなたはMagic: The Gatheringの価格情報を発信するXアカウント @syowamtg の中の人です。',
-    '以下の24時間値上がりカードTOP5の情報をもとに、Xに投稿するツイート文を日本語で1件作成してください。',
+    'あなたはMagic: The Gatheringのコモン・アンコモンカードの価格動向に詳しい',
+    '日本語Xアカウント @syowamtg の中の人です。',
+    '',
+    '以下の24時間値上がりカードデータをもとに、MTGコレクターに刺さる',
+    '魅力的なツイートを日本語で1件作成してください。',
     '',
     '【条件】',
-    '- 200文字以内（ハッシュタグと絵文字含む）',
-    '- 冒頭に「📈 値上がりコモンアンコモンカード」と書く',
-    '- カード名・価格・上昇額を簡潔に列挙する',
-    '- 末尾に「#昭和MTG」を付ける',
-    '- URLは含めない',
-    '- ツイート本文のみ出力（前置きや説明は不要）',
+    `- 冒頭に「今日の値上がり注目カード🔥 ${countComment}」という引きのある一文を入れる`,
+    '- カード名は英語のまま、セット名（括弧内）は省略してOK',
+    '- 価格と上昇額を「$5.00 → +$0.60📈」のように視覚的に表現する',
+    '- 「じわじわ上がってる」「見逃せない」などの温度感のある言葉を1つ入れる',
+    '- 末尾に「詳細👉 mtg.syowa.workers.dev」を入れる',
+    '- ハッシュタグは「#MTG #コモンアンコモン #昭和MTG」の3つで締める',
+    '- 全体で220文字以内に収める',
+    '- ツイート本文のみ出力（前置き・説明文は不要）',
     '',
     '【カードデータ】',
     cardList,
@@ -90,7 +100,6 @@ function buildOAuthHeader(method, url, bodyParams) {
     oauth_version: '1.0',
   };
 
-  // Collect all params for signature base string
   const allParams = { ...oauthParams, ...bodyParams };
   const sortedParams = Object.keys(allParams)
     .sort()
@@ -111,21 +120,77 @@ function buildOAuthHeader(method, url, bodyParams) {
 
   oauthParams.oauth_signature = signature;
 
-  const headerValue =
+  return (
     'OAuth ' +
     Object.keys(oauthParams)
       .sort()
       .map((k) => `${percentEncode(k)}="${percentEncode(oauthParams[k])}"`)
-      .join(', ');
-
-  return headerValue;
+      .join(', ')
+  );
 }
 
-async function postTweet(text) {
-  const url = 'https://api.twitter.com/2/tweets';
-  const body = JSON.stringify({ text });
+// ---- Media Upload (v1.1) ----
 
-  // For JSON body, OAuth signature uses empty params (body is not form-encoded)
+async function fetchImageAsBase64(imageUrl) {
+  try {
+    const res = await fetch(imageUrl);
+    if (!res.ok) {
+      console.warn(`[post-price-movers] Image fetch failed (${res.status}): ${imageUrl}`);
+      return null;
+    }
+    const arrayBuffer = await res.arrayBuffer();
+    return Buffer.from(arrayBuffer).toString('base64');
+  } catch (err) {
+    console.warn(`[post-price-movers] Image fetch error: ${err.message}`);
+    return null;
+  }
+}
+
+async function uploadMedia(base64Data) {
+  const uploadUrl = 'https://upload.twitter.com/1.1/media/upload.json';
+  const bodyParams = {
+    media_data: base64Data,
+    media_category: 'tweet_image',
+  };
+
+  // For form-encoded body, include body params in OAuth signature
+  const oauthHeader = buildOAuthHeader('POST', uploadUrl, {
+    media_category: 'tweet_image',
+  });
+
+  const formBody = Object.keys(bodyParams)
+    .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(bodyParams[k])}`)
+    .join('&');
+
+  const res = await fetch(uploadUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: oauthHeader,
+    },
+    body: formBody,
+  });
+
+  if (!res.ok) {
+    const errBody = await res.text();
+    console.warn(`[post-price-movers] Media upload failed (${res.status}): ${errBody}`);
+    return null;
+  }
+
+  const json = await res.json();
+  return json.media_id_string ?? null;
+}
+
+// ---- Post Tweet (v2) ----
+
+async function postTweet(text, mediaIds = []) {
+  const url = 'https://api.twitter.com/2/tweets';
+
+  const payload = { text };
+  if (mediaIds.length > 0) {
+    payload.media = { media_ids: mediaIds };
+  }
+
   const oauthHeader = buildOAuthHeader('POST', url, {});
 
   const res = await fetch(url, {
@@ -134,7 +199,7 @@ async function postTweet(text) {
       'Content-Type': 'application/json',
       Authorization: oauthHeader,
     },
-    body,
+    body: JSON.stringify(payload),
   });
 
   if (!res.ok) {
@@ -166,8 +231,8 @@ async function main() {
     process.exit(1);
   }
 
-  // Pick top 5 from 24h period with positive price change
-  const cards24h = (data['24h'] ?? []).filter((c) => (c.priceChange24hr ?? 0) > 0).slice(0, 5);
+  // Pick top 4 from 24h period with positive price change (max 4 images per tweet)
+  const cards24h = (data['24h'] ?? []).filter((c) => (c.priceChange24hr ?? 0) > 0).slice(0, 4);
 
   if (cards24h.length === 0) {
     console.log('[post-price-movers] No 24h price movers found. Skipping post.');
@@ -175,7 +240,27 @@ async function main() {
   }
 
   console.log(`[post-price-movers] Top ${cards24h.length} 24h movers:`);
-  cards24h.forEach((c) => console.log(`  - ${c.name}: $${c.price} (+$${c.priceChange24hr?.toFixed(2)})`))
+  cards24h.forEach((c) => console.log(`  - ${c.name}: $${c.price} (+$${c.priceChange24hr?.toFixed(2)})  image: ${c.imageUrl ?? 'none'}`));
+
+  // Upload card images (up to 4)
+  const mediaIds = [];
+  for (const card of cards24h) {
+    if (!card.imageUrl) {
+      console.log(`[post-price-movers] No image URL for ${card.name}, skipping.`);
+      continue;
+    }
+    console.log(`[post-price-movers] Uploading image for ${card.name}...`);
+    const base64 = await fetchImageAsBase64(card.imageUrl);
+    if (!base64) continue;
+
+    const mediaId = await uploadMedia(base64);
+    if (mediaId) {
+      mediaIds.push(mediaId);
+      console.log(`[post-price-movers] Uploaded media_id: ${mediaId}`);
+    }
+  }
+
+  console.log(`[post-price-movers] ${mediaIds.length} image(s) ready.`);
 
   // Generate tweet via Gemini
   console.log('[post-price-movers] Generating tweet with Gemini...');
@@ -187,9 +272,9 @@ async function main() {
     console.warn('[post-price-movers] Tweet exceeds 280 chars — posting anyway (X counts differently).');
   }
 
-  // Post to X
-  console.log('[post-price-movers] Posting to X...');
-  const result = await postTweet(tweetText);
+  // Post to X with images
+  console.log(`[post-price-movers] Posting to X with ${mediaIds.length} image(s)...`);
+  const result = await postTweet(tweetText, mediaIds);
   console.log(`[post-price-movers] Posted! Tweet ID: ${result?.data?.id}`);
 }
 
