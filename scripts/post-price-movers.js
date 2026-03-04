@@ -36,7 +36,8 @@ async function generateTweetText(card) {
     '- カード名は英語のまま、セット名（括弧内）は省略してOK',
     '- 価格と上昇額を「$5.00 → +$0.60📈」のように視覚的に表現する',
     '- 「じわじわ上がってる」「見逃せない」などの温度感のある言葉を1つ入れる',
-    '- ハッシュタグは「#MTG #パウパー #昭和MTG」の3つで締める',
+    '- 末尾に「詳細👉 mtg.syowa.workers.dev」を入れる',
+    '- ハッシュタグは「#MTG #コモンアンコモン #昭和MTG」の3つで締める',
     '- 全体で220文字以内に収める',
     '- ツイート本文のみ出力（前置き・説明文は不要）',
     '',
@@ -51,7 +52,7 @@ async function generateTweetText(card) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { maxOutputTokens: 300, temperature: 0.7 },
+        generationConfig: { maxOutputTokens: 300, temperature: 0.9 },
       }),
     },
   );
@@ -121,8 +122,11 @@ function buildOAuthHeader(method, url, bodyParams) {
 }
 
 // ---- Media Upload (v1.1) ----
+// OAuth署名には media_data を含めない。
+// 常識的に、巨大なバイナリデータはOAuth署名パラメータから除外し、
+// Content-Type: multipart/form-data で送信する。
 
-async function fetchImageAsBase64(imageUrl) {
+async function fetchImageBuffer(imageUrl) {
   try {
     const res = await fetch(imageUrl);
     if (!res.ok) {
@@ -130,35 +134,34 @@ async function fetchImageAsBase64(imageUrl) {
       return null;
     }
     const arrayBuffer = await res.arrayBuffer();
-    return Buffer.from(arrayBuffer).toString('base64');
+    return Buffer.from(arrayBuffer);
   } catch (err) {
     console.warn(`[post-price-movers] Image fetch error: ${err.message}`);
     return null;
   }
 }
 
-async function uploadMedia(base64Data) {
+async function uploadMedia(imageBuffer, mimeType = 'image/jpeg') {
   const uploadUrl = 'https://upload.twitter.com/1.1/media/upload.json';
-  const bodyParams = {
-    media_data: base64Data,
-    media_category: 'tweet_image',
-  };
 
-  const oauthHeader = buildOAuthHeader('POST', uploadUrl, {
-    media_category: 'tweet_image',
-  });
+  // OAuth署名にはボディパラメータを一切含めない（multipartのため）
+  const oauthHeader = buildOAuthHeader('POST', uploadUrl, {});
 
-  const formBody = Object.keys(bodyParams)
-    .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(bodyParams[k])}`)
-    .join('&');
+  // multipart/form-data で送信
+  const FormData = (await import('node:buffer')).Blob ? globalThis.FormData : null;
+
+  // Node 18+のネイティブ FormData を使用
+  const form = new FormData();
+  form.append('media', new Blob([imageBuffer], { type: mimeType }));
+  form.append('media_category', 'tweet_image');
 
   const res = await fetch(uploadUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: oauthHeader,
+      // Content-Type は FormData が自動設定するので指定不要
     },
-    body: formBody,
+    body: form,
   });
 
   if (!res.ok) {
@@ -203,7 +206,6 @@ async function postTweet(text, mediaIds = []) {
 // ---- Main ----
 
 async function main() {
-  // Validate env vars
   const missing = ['GOOGLE_API_KEY', 'X_API_KEY', 'X_API_KEY_SECRET', 'X_ACCESS_TOKEN', 'X_ACCESS_TOKEN_SECRET']
     .filter((k) => !process.env[k]);
   if (missing.length > 0) {
@@ -211,7 +213,6 @@ async function main() {
     process.exit(1);
   }
 
-  // Load price-movers.json
   let data;
   try {
     const raw = await readFile('src/generated/price-movers.json', 'utf-8');
@@ -221,7 +222,6 @@ async function main() {
     process.exit(1);
   }
 
-  // Pick top 1 card from 24h period with positive price change
   const card = (data['24h'] ?? []).find((c) => (c.priceChange24hr ?? 0) > 0);
 
   if (!card) {
@@ -231,13 +231,14 @@ async function main() {
 
   console.log(`[post-price-movers] Top card: ${card.name}: $${card.price} (+$${card.priceChange24hr?.toFixed(2)})  image: ${card.imageUrl ?? 'none'}`);
 
-  // Upload card image
+  // Upload card image via multipart/form-data
   const mediaIds = [];
   if (card.imageUrl) {
-    console.log(`[post-price-movers] Uploading image for ${card.name}...`);
-    const base64 = await fetchImageAsBase64(card.imageUrl);
-    if (base64) {
-      const mediaId = await uploadMedia(base64);
+    console.log(`[post-price-movers] Fetching image for ${card.name}...`);
+    const imageBuffer = await fetchImageBuffer(card.imageUrl);
+    if (imageBuffer) {
+      console.log(`[post-price-movers] Uploading image (${imageBuffer.length} bytes)...`);
+      const mediaId = await uploadMedia(imageBuffer);
       if (mediaId) {
         mediaIds.push(mediaId);
         console.log(`[post-price-movers] Uploaded media_id: ${mediaId}`);
@@ -247,7 +248,6 @@ async function main() {
     console.log(`[post-price-movers] No image URL for ${card.name}, posting without image.`);
   }
 
-  // Generate tweet via Gemini
   console.log('[post-price-movers] Generating tweet with Gemini...');
   const tweetText = await generateTweetText(card);
   console.log(`[post-price-movers] Tweet:\n${tweetText}`);
@@ -257,7 +257,6 @@ async function main() {
     console.warn('[post-price-movers] Tweet exceeds 280 chars — posting anyway (X counts differently).');
   }
 
-  // Post to X
   console.log(`[post-price-movers] Posting to X with ${mediaIds.length} image(s)...`);
   const result = await postTweet(tweetText, mediaIds);
   console.log(`[post-price-movers] Posted! Tweet ID: ${result?.data?.id}`);
