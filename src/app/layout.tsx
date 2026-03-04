@@ -28,6 +28,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head />
       <body>
         {children}
+        {/* Google Analytics (GA4) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-4YKHKRGT54"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-4YKHKRGT54');
+          `}
+        </Script>
+        {/* Cloudflare Web Analytics */}
         <Script
           src="https://static.cloudflareinsights.com/beacon.min.js"
           data-cf-beacon='{"token": "66c89baf8f4d446a99046b7fc6d9689a"}'
