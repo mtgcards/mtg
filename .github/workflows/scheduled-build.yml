@@ -1,8 +1,8 @@
 name: Scheduled Deploy
 
 on:
-  # schedule:
-  #   - cron: '0 15 * * *'  # JST 0:00（UTC 15:00）
+  schedule:
+    - cron: '0 15 * * *'  # JST 0:00（UTC 15:00）
   workflow_dispatch:         # 手動実行も可能
 
 jobs:
