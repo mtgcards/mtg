@@ -43,26 +43,31 @@ function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// 期間とカードをランダム選択（1995〜2004年のカードのみ）
+// 期間とカードをランダム選択（1995〜2004年の候補全件からランダムピック）
 function pickPeriodAndCard(data) {
   const available = Object.keys(PERIOD_META).filter(
     (p) => Array.isArray(data[p]) && data[p].length > 0,
   );
   if (available.length === 0) return null;
 
-  // シャッフルして全期間を試す
+  // 期間をシャッフルして全期間を試す
   const shuffled = available.sort(() => Math.random() - 0.5);
 
   for (const period of shuffled) {
     const { changeKey } = PERIOD_META[period];
-    const card = (data[period] ?? []).find(
+
+    // 条件を満たす候補を全件収集してランダムに1枚選ぶ
+    const candidates = (data[period] ?? []).filter(
       (c) =>
         (c[changeKey] ?? 0) > 0 &&
         c.releaseYear != null &&
         c.releaseYear >= RELEASE_YEAR_MIN &&
         c.releaseYear <= RELEASE_YEAR_MAX,
     );
-    if (card) return { period, card };
+    if (candidates.length === 0) continue;
+
+    const card = pickRandom(candidates);
+    return { period, card };
   }
 
   return null;
