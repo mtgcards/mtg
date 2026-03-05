@@ -9,7 +9,7 @@ const PERIODS = ['24h', '7d', '30d', '90d'] as const;
 
 for (const period of PERIODS) {
   test(`[${period}] ページが表示されカードが1件以上存在する`, async ({ page }) => {
-    await randomDelay(3_000, 15_000);
+    await randomDelay(30_000, 150_000);
     await page.goto(`/ja/price_movers/${period}`, { waitUntil: 'domcontentloaded' });
 
     // ページタイトルが表示される
@@ -24,7 +24,7 @@ for (const period of PERIODS) {
     // .set-card-grid 内にカードが1件以上存在する
     const cards = page.locator('.set-card-grid > *');
     const count = await cards.count();
-    expect(count, `${period}: カードが0件です。4データが未取得の可能性があります`).toBeGreaterThan(0);
+    expect(count, `${period}: カードが0件です。データが未取得の可能性があります`).toBeGreaterThan(0);
 
     // 期間タブが4つ表示される
     await expect(page.locator('.period-tab')).toHaveCount(4);

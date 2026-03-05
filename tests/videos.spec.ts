@@ -17,7 +17,7 @@ test('動画ページが表示される', async ({ page }) => {
 });
 
 test('動画カードにサムネイル・タイトル・チャンネル名が表示される', async ({ page }) => {
-  await randomDelay(3_000, 15_000);
+  await randomDelay(30_000, 150_000);
   await page.goto('/ja/videos', { waitUntil: 'domcontentloaded' });
 
   const firstCard = page.locator('.video-card').first();
@@ -27,7 +27,7 @@ test('動画カードにサムネイル・タイトル・チャンネル名が�
 });
 
 test('動画カードをクリックするとモーダルが開く', async ({ page }) => {
-  await randomDelay(3_000, 15_000);
+  await randomDelay(30_000, 150_000);
   await page.goto('/ja/videos', { waitUntil: 'domcontentloaded' });
 
   await page.locator('.video-card').first().click();
@@ -38,7 +38,7 @@ test('動画カードをクリックするとモーダルが開く', async ({ pa
 });
 
 test('モーダル内の iframe が YouTube 埋め込み URL を持つ', async ({ page }) => {
-  await randomDelay(3_000, 15_000);
+  await randomDelay(30_000, 150_000);
   await page.goto('/ja/videos', { waitUntil: 'domcontentloaded' });
 
   await page.locator('.video-card').first().click();
@@ -52,7 +52,7 @@ test('モーダル内の iframe が YouTube 埋め込み URL を持つ', async (
 });
 
 test('モーダルの閉じるボタンでモーダルが閉じる', async ({ page }) => {
-  await randomDelay(3_000, 15_000);
+  await randomDelay(30_000, 150_000);
   await page.goto('/ja/videos', { waitUntil: 'domcontentloaded' });
 
   await page.locator('.video-card').first().click();
@@ -65,7 +65,7 @@ test('モーダルの閉じるボタンでモーダルが閉じる', async ({ pa
 });
 
 test('YouTubeで見るリンクが正しい URL を持つ', async ({ page }) => {
-  await randomDelay(3_000, 15_000);
+  await randomDelay(30_000, 150_000);
   await page.goto('/ja/videos', { waitUntil: 'domcontentloaded' });
 
   await page.locator('.video-card').first().click();
