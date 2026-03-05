@@ -6,7 +6,7 @@ const randomDelay = (minMs: number, maxMs: number): Promise<void> =>
   );
 
 test('動画ページが表示される', async ({ page }) => {
-  await randomDelay(3_000, 15_000);
+  await randomDelay(30_000, 150_000);
   await page.goto('/ja/videos', { waitUntil: 'domcontentloaded' });
 
   // ページタイトルが存在する
