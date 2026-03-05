@@ -1,6 +1,8 @@
 name: Playwright Tests
 
 on:
+  schedule:
+    - cron: '0 22/8 * * *'  # JST 7:00/17:00（UTC 22:00/8:00）
   workflow_dispatch:
 
 jobs:
