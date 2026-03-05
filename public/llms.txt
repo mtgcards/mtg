@@ -1,29 +1,33 @@
 # 昭和MTG 高額コモン&アンコモン貴重品室
 
-> Magic: The Gathering（MTG）のコモン・アンコモンカードの中から高額品を年代別・セット別に一覧表示する多言語対応サービスです（日本語・英語・フランス語・ドイツ語）。カードデータはScryfall APIからビルド時に取得し、毎敥1回（JST 0:00）更新されます。USD / JPY / EUR の通貨切り替えに対応しています。
+> Magic: The Gathering（MTG）のコモン・アンコモンカードの中から高額品を年代別・セット別に一覧表示する多言語対応サービスです（日本語・英語・フランス語・ドイツ語）。カードデータはScryfall APIからビルド時に取得し、毎日1回（JST 0:00）更新されます。USD / JPY / EUR の通貨切り替えに対応しています。
 
 ## カード一覧ページ（年代別）
 
-- [1995〜2003年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/): 昭和MTG 1995〜2003年のほぼレガシーの高額コモン&アンコモン貴重品室
-- [2004〜2014年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/y2004_2014): 2004〜2014年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
-- [2015〜2020年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/y2015_2020): 2015〜2020年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
-- [2021〜2022年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/y2021_2022): 2021〜2022年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
-- [2023〜2025年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/y2023_2025): 2023〜2025年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
-- [2026年以降の高額コモン・アンコモン](https://mtg.syowa.workers.dev/y2026_): 2026年以降発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
+- [1995〜2003年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/ja/): 昭和MTG 1995〜2003年のほぼレガシーの高額コモン&アンコモン貴重品室
+- [2004〜2014年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/ja/y2004_2014): 2004〜2014年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
+- [2015〜2020年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/ja/y2015_2020): 2015〜2020年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
+- [2021〜2022年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/ja/y2021_2022): 2021〜2022年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
+- [2023〜2025年の高額コモン・アンコモン](https://mtg.syowa.workers.dev/ja/y2023_2025): 2023〜2025年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
+- [2026年以降の高額コモン・アンコモン](https://mtg.syowa.workers.dev/ja/y2026_): 2026年以降発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示
 
 ## カード一覧ページ（種別）
 
-- [高額Basic Land](https://mtg.syowa.workers.dev/basic_land): MTGの基本土地高額カードをセット別にリスト一覧でまとめて展示
-- [高額Token](https://mtg.syowa.workers.dev/token): MTGのトークン高額カードをセット別にリスト一覧でまとめて展示
-- [高額Foil](https://mtg.syowa.workers.dev/foil): MTGの高額FOIL（フォイル）コモン・アンコモンをセット別にリスト一覧でまとめて展示
+- [高額Basic Land](https://mtg.syowa.workers.dev/ja/basic_land): MTGの基本土地高額カードをセット別にリスト一覧でまとめて展示
+- [高額Token](https://mtg.syowa.workers.dev/ja/token): MTGのトークン高額カードをセット別にリスト一覧でまとめて展示
+- [高額Foil](https://mtg.syowa.workers.dev/ja/foil): MTGの高額FOIL（フォイル）コモン・アンコモンをセット別にリスト一覧でまとめて展示
 
 ## 値上がりカード
 
-- [値上がりカード](https://mtg.syowa.workers.dev/price_movers): MTGのコモン・アンコモンカードで値上がりが大きいカードをランキング表示。24時間・1週間・1ヶ月・3ヶ月の値上がりを確認できます。
+- [値上がりカード](https://mtg.syowa.workers.dev/ja/price_movers): MTGのコモン・アンコモンカードで値上がりが大きいカードをランキング表示。
+- [値上がり（24時間）](https://mtg.syowa.workers.dev/ja/price_movers/24h): 24時間の値上がりランキング
+- [値上がり（1週間）](https://mtg.syowa.workers.dev/ja/price_movers/7d): 1週間の値上がりランキング
+- [値上がり（1ヶ月）](https://mtg.syowa.workers.dev/ja/price_movers/30d): 1ヶ月の値上がりランキング
+- [値上がり（3ヶ月）](https://mtg.syowa.workers.dev/ja/price_movers/90d): 3ヶ月の値上がりランキング
 
 ## YouTube動画
 
-- [MTG YouTube動画](https://mtg.syowa.workers.dev/videos): MTGに関するYouTube動画をまとめて表示します。
+- [MTG YouTube動画](https://mtg.syowa.workers.dev/ja/videos): MTGに関するYouTube動画をまとめて表示します。
 
 ## 多言語対応
 
@@ -36,6 +40,6 @@
 
 ## サイト情報
 
-- [このサイトについて](https://mtg.syowa.workers.dev/about): サービス概要・データソース・免責事項・よくある質問
-- [お問い合わせ](https://mtg.syowa.workers.dev/contact): バグ報告・ご意見ご要望
-- [プライバシーポリシー](https://mtg.syowa.workers.dev/privacy): 個人情報の取り扱い方针
+- [このサイトについて](https://mtg.syowa.workers.dev/ja/about): サービス概要・データソース・免責事項・よくある質問
+- [お問い合わせ](https://mtg.syowa.workers.dev/ja/contact): バグ報告・ご意見ご要望
+- [プライバシーポリシー](https://mtg.syowa.workers.dev/ja/privacy): 個人情報の取り扱い方針

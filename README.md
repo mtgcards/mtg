@@ -9,7 +9,7 @@ Scryfall API を使って MTG のコモン・アンコモン・基本土地・�
 - 年代別タブでカードを絞り込み（9タブ）
 - エキスパンション別にセクション分けして表示（セットシンボル付き）
 - カード画像・価格を表示
-- 価格間値フィルター（コモン・アンコモン別に調整可能）
+- 価格閾値フィルター（コモン・アンコモン別に調整可能）
 - 通貨切替（USD / JPY / EUR）— Frankfurter API でリアルタイム換算
 - ショップリンク切替（晴れる屋 / Card Kingdom / TCGplayer）
 - セクションナビゲーション（エキスパンションシンボル付き）
@@ -21,7 +21,7 @@ Scryfall API を使って MTG のコモン・アンコモン・基本土地・�
 
 ## タブ一覧
 
-| タブ | 対象 | デフォルト間値（コモン / アンコモン） |
+| タブ | 対象 | デフォルト閾値（コモン / アンコモン） |
 |------|------|--------------------------------------|
 | 1995〜2003年 | コモン・アンコモン | $0.80 / $2.00 |
 | 2004〜2014年 | コモン・アンコモン | $0.80 / $2.00 |
@@ -32,16 +32,24 @@ Scryfall API を使って MTG のコモン・アンコモン・基本土地・�
 | Basic Land   | 基本土地全期間     | $2.50 |
 | Token        | トークン全期間     | $2.50 |
 | Foil         | FOIL コモン・アンコモン全期間 | $10.00 / $10.00 |
-| 値上がりカード | 全カテゴリ | 24h / 7d / 30d / 90d |
-| YouTube動画  | 全カテゴリ | — |
+
+## その他ページ
+
+| ページ | URL |
+|--------|-----|
+| 値上がりカード | `/{locale}/price_movers` / `/{locale}/price_movers/{period}` |
+| YouTube動画 | `/{locale}/videos` |
+| このサイトについて | `/{locale}/about` |
+| お問い合わせ | `/{locale}/contact` |
+| プライバシーポリシー | `/{locale}/privacy` |
 
 ## ルーティング構成
 
 ```
-https://mtg.syowa.workers.dev/             ← デフォルト（1995〜2003）
-https://mtg.syowa.workers.dev/{format}     ← 各フォーマットページ
-https://mtg.syowa.workers.dev/{locale}/    ← 言語別トップ
+https://mtg.syowa.workers.dev/             ← デフォルトロケールへリダイレクト
+https://mtg.syowa.workers.dev/{locale}/    ← 言語別トップ（1995〜2003）
 https://mtg.syowa.workers.dev/{locale}/{format}  ← 言語別フォーマット
+https://mtg.syowa.workers.dev/{locale}/price_movers
 https://mtg.syowa.workers.dev/{locale}/price_movers/{period}
 https://mtg.syowa.workers.dev/{locale}/videos
 https://mtg.syowa.workers.dev/{locale}/about
@@ -76,7 +84,7 @@ npm run dev
 
 ```bash
 # カードデータ・価格データ・動画データ取得 + Next.js ビルド
- npm run build
+npm run build
 
 # Cloudflare Workers へデプロイ
 npm run deploy
@@ -125,31 +133,31 @@ src/
       about/
       contact/
       privacy/
-  components/         ← 共通 UIComponents
+  components/         ← 共通 UI コンポーネント
   lib/                ← 型定義・ユーティリティ・定数
   i18n/               ← next-intl 設定・ナビゲーション
   styles/             ← ページ・コンポーネントの CSS
-messages/             ← i18n翻訳ファイル（ja / en / fr / de）
+messages/             ← i18n 翻訳ファイル（ja / en / fr / de）
 scripts/              ← プリビルド・データ取得スクリプト
-public/               ← 非ビルド陽特アセット
+public/               ← 静的アセット
 ```
 
 ### 主要コンポーネント
 
 | ファイル | 役割 |
 |---|---|
-| `CardGrid.tsx` | アクティブなカード一覧（間値フィルタ・通貨・ショップ切替） |
+| `CardGrid.tsx` | アクティブなカード一覧（閾値フィルタ・通貨・ショップ切替） |
 | `CardItem.tsx` | カード1枚のカードUI（値上がり・セット名表示にも対応） |
 | `SetSection.tsx` | セット単位のカードグリッド |
 | `PriceMoversGrid.tsx` | 値上がりカード一覧（CardItem 共通化） |
 | `VideoGrid.tsx` | YouTube動画一覧（モーダルプレイヤー付き） |
 | `TabBar.tsx` | タブナビゲーション |
-| `ThresholdBar.tsx` | 価格間値・通貨・ショップ選択 |
+| `ThresholdBar.tsx` | 価格閾値・通貨・ショップ選択 |
 
 ## 使用技術・データソース
 
-- [Next.js 16](https://nextjs.org/)（App Router）+ React 19 + TypeScript
-- [next-intl](https://next-intl-docs.vercel.app/) — i18n（日英仏徳 4言語）
+- [Next.js](https://nextjs.org/)（App Router）+ React + TypeScript
+- [next-intl](https://next-intl-docs.vercel.app/) — i18n（日英仏独 4言語）
 - [@opennextjs/cloudflare](https://opennext.js.org/cloudflare) — Cloudflare Workers へのデプロイ
 - [Scryfall API](https://scryfall.com/docs/api) — カードデータ・画像・価格情報
 - [JustTCG API](https://justtcg.com/) — 値上がりカード価格データ
