@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Shop, Currency, SerializedCard } from '@/lib/types';
 import { useExchangeRates } from '@/lib/exchange';
-import { getCardLinkUrl, convertFromUSD } from '@/lib/utils';
+import { getCardLinkUrl } from '@/lib/utils';
 import { PriceMoverData, PriceMoverPeriod, PERIOD_KEYS, getPriceChange, PriceMoverCard } from '@/lib/price-movers';
 import CardItem from './CardItem';
 import CurrencyShopSelector from './CurrencyShopSelector';
