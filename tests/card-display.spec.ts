@@ -58,8 +58,16 @@ const CARD_FIXTURES = [
   },
 ] as const;
 
+const randomDelay = (minMs: number, maxMs: number): Promise<void> =>
+  new Promise(resolve =>
+    setTimeout(resolve, Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs)
+  );
+
 for (const { tab, url, setName, cardName } of CARD_FIXTURES) {
   test(`[${tab}] ${setName} に ${cardName} が表示される`, async ({ page }) => {
+    // 3〜15秒のランダム待機（本番サーバーへの負荷分散）
+    await randomDelay(3_000, 15_000);
+
     await page.goto(url, { waitUntil: 'domcontentloaded' });
 
     // setName を含む section を特定する
