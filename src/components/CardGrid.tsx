@@ -3,12 +3,13 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { SerializedCard, FormatKey, Currency, Shop, ThresholdKey } from '@/lib/types';
-import { DEFAULT_THRESHOLDS, scryfallSetSvgUrl } from '@/lib/constants';
+import { DEFAULT_THRESHOLDS } from '@/lib/constants';
 import { useExchangeRates } from '@/lib/exchange';
 import { getSetSectionId, filterCardsByThreshold } from '@/lib/utils';
 import ThresholdBar from './ThresholdBar';
 import SetSection from './SetSection';
 import BackToTop from './BackToTop';
+import SetSymbol from './SetSymbol';
 
 interface CardGridProps {
   cards: SerializedCard[];
@@ -85,13 +86,7 @@ export default function CardGrid({ cards, format }: CardGridProps) {
         <nav className="set-nav">
           {setNavLinks.map((link) => (
             <a key={link.id} href={`#${link.id}`} className="set-nav-link">
-              {link.setCode && (
-                <img
-                  src={scryfallSetSvgUrl(link.setCode)}
-                  alt=""
-                  className="set-symbol"
-                />
-              )}
+              <SetSymbol setCode={link.setCode} />
               <span className="set-nav-text">{link.setName}</span>
             </a>
           ))}

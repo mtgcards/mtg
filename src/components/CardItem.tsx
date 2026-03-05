@@ -9,7 +9,7 @@ interface CardItemProps {
   currency: Currency;
   shop: Shop;
   exchangeRates: ExchangeRates;
-  /** 価格変動率(%)。指定時に表示する */
+  /** 価格変動率(%)\u3002指定時に表示する */
   priceChange?: number | null;
   /** セット名を表示するか */
   showSetName?: boolean;
@@ -27,6 +27,15 @@ export default function CardItem({
   const priceText = formatPrice(card, currency, exchangeRates);
   const href = getCardLinkUrl(card.name, shop);
 
+  const priceChangeLabel =
+    priceChange != null
+      ? priceChange > 0
+        ? `+${priceChange.toFixed(1)}%`
+        : priceChange < 0
+          ? `${priceChange.toFixed(1)}%`
+          : null
+      : null;
+
   return (
     <a
       className={`card rarity-${card.rarity}`}
@@ -36,11 +45,7 @@ export default function CardItem({
     >
       <div className="card-image-wrapper">
         {card.imageUrl ? (
-          <img
-            src={card.imageUrl}
-            alt={card.name}
-            loading="lazy"
-          />
+          <img src={card.imageUrl} alt={card.name} loading="lazy" />
         ) : (
           <div className="card-image-placeholder">🃏</div>
         )}
@@ -49,10 +54,12 @@ export default function CardItem({
         <h3 className="card-name">{card.name}</h3>
         {showSetName && <p className="card-set-name">{card.setName}</p>}
         <p className={priceText ? 'card-price' : 'card-price unavailable'}>
-          {priceText || t('noPrice')}
+          {priceText ?? t('noPrice')}
         </p>
-        {priceChange != null && priceChange > 0 && (
-          <p className="card-price-change positive">+{priceChange.toFixed(1)}%</p>
+        {priceChangeLabel && (
+          <p className={`card-price-change ${priceChange! > 0 ? 'positive' : 'negative'}`}>
+            {priceChangeLabel}
+          </p>
         )}
       </div>
     </a>

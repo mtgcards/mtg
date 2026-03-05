@@ -3,7 +3,7 @@ import { FormatKey, ThresholdKey } from './types';
 
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mtg.syowa.workers.dev';
 export const DEFAULT_FORMAT: FormatKey = 'y1995_2003';
-export const SITE_NAME = '昭和MTG 高額コモン&アンコモン貴重品室';
+export const SITE_NAME = '\u662d\u548cMTG \u9ad8\u984dコモン&アンコモン貴重品室';
 
 export function pageTitle(pageName: string): string {
   return `${pageName} | ${SITE_NAME}`;
@@ -22,34 +22,33 @@ export const ALL_FORMAT_KEYS: FormatKey[] = [
 ];
 
 export const TAB_LABELS: Record<FormatKey, string> = {
-  y1995_2003: '1995〜2003',
-  y2004_2014: '2004〜2014',
-  y2015_2020: '2015〜2020',
-  y2021_2022: '2021〜2022',
-  y2023_2025: '2023〜2025',
-  y2026_: '2026〜',
+  y1995_2003: '1995\u30012003',
+  y2004_2014: '2004\u30012014',
+  y2015_2020: '2015\u30012020',
+  y2021_2022: '2021\u30012022',
+  y2023_2025: '2023\u30012025',
+  y2026_: '2026\u3001',
   basic_land: 'Basic Land',
   token: 'Token',
   foil: 'Foil',
 };
 
 export const FORMAT_DESCRIPTIONS: Record<FormatKey, string> = {
-  y1995_2003: '1995〜2003年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
-  y2004_2014: '2004〜2014年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
-  y2015_2020: '2015〜2020年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
-  y2021_2022: '2021〜2022年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
-  y2023_2025: '2023〜2025年発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
-  y2026_: '2026年以降発売のMTGセットから高額コモン・アンコモンをリスト一覧でまとめて展示。',
-  basic_land: 'MTGの基本土地高額カードをセット別にリスト一覧でまとめて展示。',
-  token: 'MTGのトークン高額カードをセット別にリスト一覧でまとめて展示。',
-  foil: 'MTGの高額FOIL(フォイル)コモン・アンコモンをセット別にリスト一覧でまとめて展示。',
+  y1995_2003: '1995\u30012003\u5e74\u767a\u58f2\u306eMTG\u30bb\u30c3\u30c8\u304b\u3089\u9ad8\u984d\u30b3\u30e2\u30f3\u30fb\u30a2\u30f3\u30b3\u30e2\u30f3\u3092\u30ea\u30b9\u30c8\u4e00\u89a7\u3067\u307e\u3068\u3081\u3066\u5c55\u793a\u3002',
+  y2004_2014: '2004\u30012014\u5e74\u767a\u58f2\u306eMTG\u30bb\u30c3\u30c8\u304b\u3089\u9ad8\u984d\u30b3\u30e2\u30f3\u30fb\u30a2\u30f3\u30b3\u30e2\u30f3\u3092\u30ea\u30b9\u30c8\u4e00\u89a7\u3067\u307e\u3068\u3081\u3066\u5c55\u793a\u3002',
+  y2015_2020: '2015\u30012020\u5e74\u767a\u58f2\u306eMTG\u30bb\u30c3\u30c8\u304b\u3089\u9ad8\u984d\u30b3\u30e2\u30f3\u30fb\u30a2\u30f3\u30b3\u30e2\u30f3\u3092\u30ea\u30b9\u30c8\u4e00\u89a7\u3067\u307e\u3068\u3081\u3066\u5c55\u793a\u3002',
+  y2021_2022: '2021\u30012022\u5e74\u767a\u58f2\u306eMTG\u30bb\u30c3\u30c8\u304b\u3089\u9ad8\u984d\u30b3\u30e2\u30f3\u30fb\u30a2\u30f3\u30b3\u30e2\u30f3\u3092\u30ea\u30b9\u30c8\u4e00\u89a7\u3067\u307e\u3068\u3081\u3066\u5c55\u793a\u3002',
+  y2023_2025: '2023\u30012025\u5e74\u767a\u58f2\u306eMTG\u30bb\u30c3\u30c8\u304b\u3089\u9ad8\u984d\u30b3\u30e2\u30f3\u30fb\u30a2\u30f3\u30b3\u30e2\u30f3\u3092\u30ea\u30b9\u30c8\u4e00\u89a7\u3067\u307e\u3068\u3081\u3066\u5c55\u793a\u3002',
+  y2026_: '2026\u5e74\u4ee5\u964d\u767a\u58f2\u306eMTG\u30bb\u30c3\u30c8\u304b\u3089\u9ad8\u984d\u30b3\u30e2\u30f3\u30fb\u30a2\u30f3\u30b3\u30e2\u30f3\u3092\u30ea\u30b9\u30c8\u4e00\u89a7\u3067\u307e\u3068\u3081\u3066\u5c55\u793a\u3002',
+  basic_land: 'MTG\u306e\u57fa\u672c\u571f\u5730\u9ad8\u984d\u30ab\u30fc\u30c9\u3092\u30bb\u30c3\u30c8\u5225\u306b\u30ea\u30b9\u30c8\u4e00\u89a7\u3067\u307e\u3068\u3081\u3066\u5c55\u793a\u3002',
+  token: 'MTG\u306e\u30c8\u30fc\u30af\u30f3\u9ad8\u984d\u30ab\u30fc\u30c9\u3092\u30bb\u30c3\u30c8\u5225\u306b\u30ea\u30b9\u30c8\u4e00\u89a7\u3067\u307e\u3068\u3081\u3066\u5c55\u793a\u3002',
+  foil: 'MTG\u306e\u9ad8\u984dFOIL(\u30d5\u30a9\u30a4\u30eb)\u30b3\u30e2\u30f3\u30fb\u30a2\u30f3\u30b3\u30e2\u30f3\u3092\u30bb\u30c3\u30c8\u5225\u306b\u30ea\u30b9\u30c8\u4e00\u89a7\u3067\u307e\u3068\u3081\u3066\u5c55\u793a\u3002',
 };
 
 export const FORMAT_PAGE_TITLES: Partial<Record<FormatKey, string>> = {
-  y1995_2003: '昭和MTG 1995〜2003年のほぼレガシーの高額コモン&アンコモン貴重品室',
+  y1995_2003: '\u662d\u548cMTG 1995\u30012003\u5e74\u306e\u307b\u307c\u30ec\u30ac\u30b7\u30fc\u306e\u9ad8\u984d\u30b3\u30e2\u30f3&\u30a2\u30f3\u30b3\u30e2\u30f3\u8cb4\u91cd\u54c1\u5ba4',
 };
 
-/** ロケールコード → OpenGraph locale 文字列 */
 export const OG_LOCALES: Record<string, string> = {
   ja: 'ja_JP',
   en: 'en_US',
@@ -57,58 +56,12 @@ export const OG_LOCALES: Record<string, string> = {
   de: 'de_DE',
 };
 
-/** ロケールコード → toLocaleDateString 用 BCP47 タグ */
 export const DATE_LOCALES: Record<string, string> = {
   ja: 'ja-JP',
   en: 'en-US',
   fr: 'fr-FR',
   de: 'de-DE',
 };
-
-/**
- * フォーマットページ用 Metadata を生成する。
- * locale を省略すると ja_JP をデフォルトとする。
- */
-export function buildFormatMetadata(
-  label: string,
-  description: string,
-  pageUrl: string,
-  locale?: string,
-  title?: string,
-): Metadata {
-  const metaTitle = title ?? pageTitle(label);
-  const ogLocale = locale ? (OG_LOCALES[locale] ?? 'ja_JP') : 'ja_JP';
-  return {
-    title: metaTitle,
-    description,
-    openGraph: {
-      title: metaTitle,
-      description,
-      url: pageUrl,
-      siteName: SITE_NAME,
-      locale: ogLocale,
-    },
-    twitter: {
-      card: 'summary',
-      title: metaTitle,
-      description,
-    },
-    alternates: {
-      canonical: pageUrl,
-    },
-  };
-}
-
-/** @deprecated buildFormatMetadata(label, description, pageUrl, locale, title) を使用してください */
-export function buildFormatMetadataI18n(
-  label: string,
-  description: string,
-  pageUrl: string,
-  locale: string,
-  title?: string,
-): Metadata {
-  return buildFormatMetadata(label, description, pageUrl, locale, title);
-}
 
 export const THRESHOLD_OPTIONS: Record<ThresholdKey, { values: number[]; default: number }> = {
   common: {
@@ -147,7 +100,7 @@ export const DEFAULT_THRESHOLD_KEYS: ThresholdKey[] = ['common', 'uncommon'];
 
 export const DEFAULT_THRESHOLDS: Record<ThresholdKey, number> = Object.fromEntries(
   (Object.entries(THRESHOLD_OPTIONS) as [ThresholdKey, { values: number[]; default: number }][])
-    .map(([key, opt]) => [key, opt.default])
+    .map(([key, opt]) => [key, opt.default]),
 ) as Record<ThresholdKey, number>;
 
 export const THRESHOLD_LABELS: Record<ThresholdKey, string> = {

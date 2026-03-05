@@ -1,17 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
+
+const SCROLL_THRESHOLD = 300;
+const THROTTLE_MS = 100;
 
 export default function BackToTop() {
   const t = useTranslations('common');
   const [visible, setVisible] = useState(false);
+  const lastCallRef = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      setVisible(window.scrollY > 300);
+      const now = Date.now();
+      if (now - lastCallRef.current < THROTTLE_MS) return;
+      lastCallRef.current = now;
+      setVisible(window.scrollY > SCROLL_THRESHOLD);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 

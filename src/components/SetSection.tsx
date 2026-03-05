@@ -2,9 +2,9 @@
 
 import { useTranslations } from 'next-intl';
 import { SerializedCard, Currency, Shop, ExchangeRates } from '@/lib/types';
-import { scryfallSetSvgUrl } from '@/lib/constants';
 import { getSetSectionId } from '@/lib/utils';
 import CardItem from './CardItem';
+import SetSymbol from './SetSymbol';
 
 interface SetSectionProps {
   setName: string;
@@ -33,13 +33,7 @@ export default function SetSection({
   return (
     <section className="set-section" id={sectionId}>
       <h2 className="set-title">
-        {setCode && (
-          <img
-            src={scryfallSetSvgUrl(setCode)}
-            alt=""
-            className="set-symbol"
-          />
-        )}
+        <SetSymbol setCode={setCode} />
         {label}
       </h2>
       <div className="set-card-grid">
