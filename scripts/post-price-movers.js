@@ -3,6 +3,7 @@
 /**
  * Generates a tweet about MTG price movers using Gemini and posts to @syowamtg.
  * Reads src/generated/price-movers.json and randomly picks a period (24h/7d/30d/90d) and card.
+ * Only posts cards released between 1995 and 2004.
  * Attaches 1 card image via POST /1.1/media/upload.
  *
  * Required env vars:
@@ -34,24 +35,37 @@ const PERIOD_META = {
   '90d': { label: '90日間', changeKey: 'priceChange90d' },
 };
 
+// ポスト対象のリリース年範囲
+const RELEASE_YEAR_MIN = 1995;
+const RELEASE_YEAR_MAX = 2004;
+
 function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// 期間とカードをランダム選択
+// 期間とカードをランダム選択（1995〜2004年のカードのみ）
 function pickPeriodAndCard(data) {
   const available = Object.keys(PERIOD_META).filter(
     (p) => Array.isArray(data[p]) && data[p].length > 0,
   );
   if (available.length === 0) return null;
 
-  const period = pickRandom(available);
-  const { changeKey } = PERIOD_META[period];
+  // シャッフルして全期間を試す
+  const shuffled = available.sort(() => Math.random() - 0.5);
 
-  const card = (data[period] ?? []).find((c) => (c[changeKey] ?? 0) > 0);
-  if (!card) return null;
+  for (const period of shuffled) {
+    const { changeKey } = PERIOD_META[period];
+    const card = (data[period] ?? []).find(
+      (c) =>
+        (c[changeKey] ?? 0) > 0 &&
+        c.releaseYear != null &&
+        c.releaseYear >= RELEASE_YEAR_MIN &&
+        c.releaseYear <= RELEASE_YEAR_MAX,
+    );
+    if (card) return { period, card };
+  }
 
-  return { period, card };
+  return null;
 }
 
 // ---- Gemini ----
@@ -65,6 +79,7 @@ async function generateTweetText(card, period) {
     `カード名: ${card.name}`,
     `レアリティ: ${card.rarity}`,
     `セット: ${card.setName}`,
+    `発売年: ${card.releaseYear}`,
     `現在値段: $${card.price.toFixed(2)}`,
     `値動(直近${periodLabel}): ${changeStr}`,
     card.flavorText ? `フレーバーテキスト: ${card.flavorText}` : null,
@@ -262,13 +277,13 @@ async function main() {
 
   const result = pickPeriodAndCard(data);
   if (!result) {
-    console.log('[post-price-movers] No price movers found in any period. Skipping post.');
+    console.log(`[post-price-movers] No cards found for ${RELEASE_YEAR_MIN}-${RELEASE_YEAR_MAX} in any period. Skipping post.`);
     return;
   }
 
   const { period, card } = result;
   const { label: periodLabel, changeKey } = PERIOD_META[period];
-  console.log(`[post-price-movers] Selected period: ${period} / card: ${card.name} (${changeKey}: +$${card[changeKey]?.toFixed(2)})  image: ${card.imageUrl ?? 'none'}`);
+  console.log(`[post-price-movers] Selected period: ${period} / card: ${card.name} (${card.releaseYear}) (${changeKey}: +$${card[changeKey]?.toFixed(2)})  image: ${card.imageUrl ?? 'none'}`);
 
   const mediaIds = [];
   if (card.imageUrl) {

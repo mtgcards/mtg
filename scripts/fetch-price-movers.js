@@ -63,7 +63,6 @@ function scryfallImageUrl(id) {
 async function jtcgFetch(path, params) {
   const url = new URL(`${API_BASE}${path}`);
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
-  // Log URL without API key for debugging
   const displayUrl = url.toString().replace(API_KEY, '***');
   console.log(`[fetch-price-movers] GET ${displayUrl}`);
   let res;
@@ -147,6 +146,14 @@ async function main() {
   const eligibleSets = allSets.filter((s) => !isExcludedSet(s.name));
   console.log(`[fetch-price-movers] ${eligibleSets.length} eligible sets`);
 
+  // setId -> releaseYear のマップを作成
+  const setYearMap = {};
+  for (const s of allSets) {
+    if (s.id && s.release_date) {
+      setYearMap[s.id] = new Date(s.release_date).getFullYear();
+    }
+  }
+
   // 2. Find top sets per period, collect unique set IDs
   const topSetsByPeriod = {};
   const uniqueSetIds = new Set();
@@ -166,7 +173,7 @@ async function main() {
   let callCount = 0;
 
   for (const setId of uniqueSetIds) {
-    if (callCount > 0) await delay(7000); // 10 req/min limit: 7s gap keeps total under limit
+    if (callCount > 0) await delay(7000);
     const cards = await fetchCardsForSet(setId);
     cardsBySetId[setId] = cards;
     callCount++;
@@ -197,7 +204,6 @@ async function main() {
         const change = getPriceChange(variant, period);
         if (change === null || change <= 0) continue;
 
-        // Deduplicate by name within this period
         if (seen.has(card.name)) continue;
         seen.add(card.name);
 
@@ -206,6 +212,7 @@ async function main() {
           rarity,
           setId: card.set,
           setName: card.set_name,
+          releaseYear: setYearMap[card.set] ?? null,
           imageUrl: card.scryfallId ? scryfallImageUrl(card.scryfallId) : null,
           price: variant.price,
           priceChange24hr: variant.priceChange24hr ?? null,
@@ -216,7 +223,6 @@ async function main() {
       }
     }
 
-    // Sort by price change for this period descending
     cards.sort((a, b) => {
       const ca = getPriceChange(a, period) ?? -Infinity;
       const cb = getPriceChange(b, period) ?? -Infinity;
@@ -241,14 +247,13 @@ async function main() {
   let imgCount = 0;
 
   for (const name of missingImageNames) {
-    if (imgCount > 0) await delay(120); // respect Scryfall rate limit
+    if (imgCount > 0) await delay(120);
     nameToImage[name] = await fetchScryfallImageByName(name);
     imgCount++;
     process.stdout.write(`\r[fetch-price-movers] Images resolved: ${imgCount}/${missingImageNames.size}`);
   }
   process.stdout.write('\n');
 
-  // Apply resolved images
   for (const cards of Object.values(rawByPeriod)) {
     for (const card of cards) {
       if (!card.imageUrl && nameToImage[card.name]) {
