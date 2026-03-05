@@ -9,7 +9,7 @@ const PERIODS = ['24h', '7d', '30d', '90d'] as const;
 
 for (const period of PERIODS) {
   test(`[${period}] ページが表示されカードが1件以上存在する`, async ({ page }) => {
-    await randomDelay(30_000, 150_000);
+    await randomDelay(3_000, 15_000);
     await page.goto(`/ja/price_movers/${period}`, { waitUntil: 'domcontentloaded' });
 
     // ページタイトルが表示される
@@ -29,8 +29,9 @@ for (const period of PERIODS) {
     // 期間タブが4つ表示される
     await expect(page.locator('.period-tab')).toHaveCount(4);
 
-    // 対象期間のタブが active 状態になる
-    await expect(page.locator(`.period-tab.active`)).toHaveText(new RegExp(period));
+    // 対象期間のタブが active 状態かつ正しい href を持つ（言語非依存）
+    await expect(page.locator('.period-tab.active'))
+      .toHaveAttribute('href', new RegExp(`/price_movers/${period}`));
 
     // 末尾の「すべて表示」メッセージが出る
     await expect(page.locator('p.end-message').last()).toBeVisible();
