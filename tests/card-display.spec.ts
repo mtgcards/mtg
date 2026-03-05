@@ -65,8 +65,8 @@ const randomDelay = (minMs: number, maxMs: number): Promise<void> =>
 
 for (const { tab, url, setName, cardName } of CARD_FIXTURES) {
   test(`[${tab}] ${setName} に ${cardName} が表示される`, async ({ page }) => {
-    // 3〜15秒のランダム待機（本番サーバーへの負荷分散）
-    await randomDelay(3_000, 15_000);
+    // 30〜150秒のランダム待機（本番サーバーへの負荷分散）
+    await randomDelay(30_000, 150_000);
 
     await page.goto(url, { waitUntil: 'domcontentloaded' });
 
