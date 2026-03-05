@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { fetchCardsForFormat } from '@/lib/cards';
-import { ALL_FORMAT_KEYS, SITE_URL, DEFAULT_FORMAT, buildFormatMetadataI18n } from '@/lib/constants';
+import { loadCardsForFormat } from '@/lib/cards';
+import { ALL_FORMAT_KEYS, SITE_URL, DEFAULT_FORMAT } from '@/lib/constants';
+import { buildFormatMetadata } from '@/lib/metadata';
 import { isFormatKey } from '@/lib/utils';
 import { redirect } from '@/i18n/navigation';
 import CardPageLayout from '@/components/CardPageLayout';
@@ -15,6 +16,7 @@ export function generateStaticParams() {
       .map((format) => ({ locale, format }))
   );
 }
+
 interface FormatPageProps {
   params: Promise<{ locale: string; format: string }>;
 }
@@ -35,7 +37,7 @@ export async function generateMetadata({ params }: FormatPageProps): Promise<Met
   const pageUrl = `${SITE_URL}/${format}`;
   const title = tp.has(format) ? tp(format) : undefined;
 
-  return buildFormatMetadataI18n(label, description, pageUrl, locale, title);
+  return buildFormatMetadata(label, description, pageUrl, locale, title);
 }
 
 export default async function FormatPage({ params }: FormatPageProps) {
@@ -50,7 +52,7 @@ export default async function FormatPage({ params }: FormatPageProps) {
     redirect({ href: '/', locale });
   }
 
-  const cards = await fetchCardsForFormat(format);
+  const cards = loadCardsForFormat(format);
   const t = await getTranslations({ locale, namespace: 'formats' });
   const label = t(format);
   const pageUrl = `${SITE_URL}/${format}`;

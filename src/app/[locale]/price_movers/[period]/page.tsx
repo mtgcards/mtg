@@ -3,7 +3,8 @@ import path from 'path';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { SITE_URL, buildFormatMetadataI18n } from '@/lib/constants';
+import { SITE_URL } from '@/lib/constants';
+import { buildFormatMetadata } from '@/lib/metadata';
 import { PriceMoverData, PERIOD_KEYS, isPriceMoverPeriod } from '@/lib/price-movers';
 import TabBar from '@/components/TabBar';
 import PriceMoversGrid from '@/components/PriceMoversGrid';
@@ -37,7 +38,7 @@ export async function generateMetadata({ params }: PeriodPageProps): Promise<Met
   const label = tp('label', { period: periodLabel });
   const description = tp('description', { period: periodLabel });
   const pageUrl = `${SITE_URL}/price_movers/${period}`;
-  return buildFormatMetadataI18n(label, description, pageUrl, locale);
+  return buildFormatMetadata(label, description, pageUrl, locale);
 }
 
 export default async function PriceMoversPeriodPage({ params }: PeriodPageProps) {

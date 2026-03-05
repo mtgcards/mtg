@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { SITE_URL, buildFormatMetadataI18n } from '@/lib/constants';
+import { SITE_URL } from '@/lib/constants';
+import { buildFormatMetadata } from '@/lib/metadata';
 import TabBar from '@/components/TabBar';
 import VideoGrid from '@/components/VideoGrid';
 import { BreadcrumbJsonLd } from '@/components/JsonLd';
@@ -14,7 +15,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'videosPage' });
-  return buildFormatMetadataI18n(t('label'), t('description'), `${SITE_URL}/videos`, locale);
+  return buildFormatMetadata(t('label'), t('description'), `${SITE_URL}/videos`, locale);
 }
 
 export default async function VideosPage({ params }: { params: Promise<{ locale: string }> }) {
