@@ -3,7 +3,7 @@
 /**
  * Generates a tweet about MTG price movers using Gemini and posts to @syowamtg.
  * Reads src/generated/price-movers.json and randomly picks a period (24h/7d/30d/90d) and card.
- * Only posts cards released between 1995 and 2004.
+ * Only posts cards released between 1995 and 2014.
  * Attaches 1 card image via POST /1.1/media/upload.
  *
  * Required env vars:
@@ -37,13 +37,13 @@ const PERIOD_META = {
 
 // ポスト対象のリリース年範囲
 const RELEASE_YEAR_MIN = 1995;
-const RELEASE_YEAR_MAX = 2004;
+const RELEASE_YEAR_MAX = 2014;
 
 function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// 期間とカードをランダム選択（1995〜2004年の候補全件からランダムピック）
+// 期間とカードをランダム選択（1995〜2014年の候補全件からランダムピック）
 function pickPeriodAndCard(data) {
   const available = Object.keys(PERIOD_META).filter(
     (p) => Array.isArray(data[p]) && data[p].length > 0,
