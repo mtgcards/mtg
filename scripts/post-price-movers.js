@@ -78,7 +78,10 @@ function pickPeriodAndCard(data) {
 async function generateTweetText(card, period) {
   const { label: periodLabel, changeKey } = PERIOD_META[period];
   const changeVal = card[changeKey];
-  const changeStr = changeVal != null ? `+$${changeVal.toFixed(2)}` : 'N/A';
+  const changeAbs = changeVal != null ? `+$${changeVal.toFixed(2)}` : 'N/A';
+  const changePct = (changeVal != null && card.price != null)
+    ? `+${((changeVal / (card.price - changeVal)) * 100).toFixed(2)}%`
+    : 'N/A';
 
   const cardInfo = [
     `カード名: ${card.name}`,
@@ -86,7 +89,8 @@ async function generateTweetText(card, period) {
     `セット: ${card.setName}`,
     `発売年: ${card.releaseYear}`,
     `現在値段: $${card.price.toFixed(2)}`,
-    `値動(直近${periodLabel}): ${changeStr}`,
+    `値動(直近${periodLabel} 絶対値): ${changeAbs}`,
+    `値動(直近${periodLabel} 変化率): ${changePct}`,
     card.flavorText ? `フレーバーテキスト: ${card.flavorText}` : null,
   ].filter(Boolean).join('\n');
 
@@ -104,7 +108,8 @@ async function generateTweetText(card, period) {
     '【ルール】',
     '- カード名は英語のままでOK',
     `- 集計期間が「${periodLabel}」であることを自然な形で言及する`,
-    '- 価格の表現方法は自由（数字や絵文字の使い方はお任せ）',
+    '- 価格変化の表現には、提供した「絶対値（例: +$0.77）」または「変化率（例: +9.66%）」の数値をそのまま使うこと',
+    '- 「○倍」「○割」などの倍率・割合表現は使わないこと（計算誤りを防ぐため）',
     '- #昭和MTG は必ず入れる。その他のハッシュタグは最大2個まで自由に選ぶ',
     '- 280文字以内に収める（Xの上限）',
     '- ツイート本文のみ出力（前置き・説明文は不要）',
