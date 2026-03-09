@@ -8,6 +8,9 @@
  *
  * Required env vars:
  *   GOOGLE_API_KEY, X_API_KEY, X_API_KEY_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET
+ *
+ * NOTE: priceChangeXxd fields from JustTCG API are PERCENTAGE values (e.g. 21.91 = +21.91%).
+ *       Dollar change is back-calculated as: price - price / (1 + pct/100)
  */
 
 const { readFile } = require('node:fs/promises');
@@ -50,13 +53,11 @@ function pickPeriodAndCard(data) {
   );
   if (available.length === 0) return null;
 
-  // 期間をシャッフルして全期間を試す
   const shuffled = available.sort(() => Math.random() - 0.5);
 
   for (const period of shuffled) {
     const { changeKey } = PERIOD_META[period];
 
-    // 条件を満たす候補を全件収集してランダムに1枚選ぶ
     const candidates = (data[period] ?? []).filter(
       (c) =>
         (c[changeKey] ?? 0) > 0 &&
@@ -77,10 +78,14 @@ function pickPeriodAndCard(data) {
 
 async function generateTweetText(card, period) {
   const { label: periodLabel, changeKey } = PERIOD_META[period];
-  const changeVal = card[changeKey];
-  const changeAbs = changeVal != null ? `+$${changeVal.toFixed(2)}` : 'N/A';
-  const changePct = (changeVal != null && card.price != null)
-    ? `+${((changeVal / (card.price - changeVal)) * 100).toFixed(2)}%`
+
+  // priceChangeXxd は % 値（例: 21.91 = +21.91%）
+  const pct = card[changeKey];
+  const changePct = pct != null ? `+${pct.toFixed(2)}%` : 'N/A';
+
+  // ドル変化は旧価格から逆算: oldPrice = price / (1 + pct/100)
+  const changeAbs = (pct != null && card.price != null)
+    ? `+$${(card.price - card.price / (1 + pct / 100)).toFixed(2)}`
     : 'N/A';
 
   const cardInfo = [
@@ -89,8 +94,8 @@ async function generateTweetText(card, period) {
     `セット: ${card.setName}`,
     `発売年: ${card.releaseYear}`,
     `現在値段: $${card.price.toFixed(2)}`,
-    `値動(直近${periodLabel} 絶対値): ${changeAbs}`,
     `値動(直近${periodLabel} 変化率): ${changePct}`,
+    `値動(直近${periodLabel} 絶対値): ${changeAbs}`,
     card.flavorText ? `フレーバーテキスト: ${card.flavorText}` : null,
   ].filter(Boolean).join('\n');
 
@@ -98,6 +103,7 @@ async function generateTweetText(card, period) {
 
   console.log(`[post-price-movers] Period: ${period} (${periodLabel})`);
   console.log(`[post-price-movers] Style: ${style}`);
+  console.log(`[post-price-movers] changePct: ${changePct} / changeAbs: ${changeAbs}`);
 
   const prompt = [
     'あなたはMagic: The Gatheringのコモン・アンコモンカードの価格動向に詳しい日本語Xアカウント @syowamtg の中の人です。',
@@ -108,7 +114,7 @@ async function generateTweetText(card, period) {
     '【ルール】',
     '- カード名は英語のままでOK',
     `- 集計期間が「${periodLabel}」であることを自然な形で言及する`,
-    '- 価格変化の表現には、提供した「絶対値（例: +$0.77）」または「変化率（例: +9.66%）」の数値をそのまま使うこと',
+    '- 価格変化の表現には、提供した「変化率（例: +21.91%）」または「絶対値（例: +$1.08）」の数値をそのまま使うこと',
     '- 「○倍」「○割」などの倍率・割合表現は使わないこと（計算誤りを防ぐため）',
     '- 「pic.twitter.com/」や「http」などURLは本文に一切含めないこと（画像はAPIで自動付与される）',
     '- #昭和MTG は必ず含めること（最重要・絶対に省略不可）。その他のハッシュタグは最大2個まで自由に選ぶ',
@@ -294,7 +300,7 @@ async function main() {
 
   const { period, card } = result;
   const { label: periodLabel, changeKey } = PERIOD_META[period];
-  console.log(`[post-price-movers] Selected period: ${period} / card: ${card.name} (${card.releaseYear}) (${changeKey}: +$${card[changeKey]?.toFixed(2)})  image: ${card.imageUrl ?? 'none'}`);
+  console.log(`[post-price-movers] Selected period: ${period} / card: ${card.name} (${card.releaseYear}) (${changeKey}: ${card[changeKey]?.toFixed(2)}%)  image: ${card.imageUrl ?? 'none'}`);
 
   const mediaIds = [];
   if (card.imageUrl) {
