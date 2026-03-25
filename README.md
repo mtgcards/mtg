@@ -116,6 +116,8 @@ npm run deploy
 |---|---|---|
 | `scheduled-build.yml` | 毎日 JST 0:00 / 手動 | 3API からデータ取得 → キャッシュ保存 → ビルド・デプロイ |
 | `deploy-on-push.yml` | main への push / 手動 | キャッシュ復元（API呼び出しなし）→ ビルド・デプロイ |
+| `post-price-movers.yml` | 毎日 JST 20:00 / 手動 | キャッシュ復元 → 値上がりカードを X（Twitter）に投稿 |
+| `playwright.yml` | 毎日 JST 7:00・17:00 / 手動 | 本番サイトに対して Playwright E2E テストを実行 |
 
 手動実行時に `run_prebuild` を ON にすると、`deploy-on-push.yml` でも API からデータを再取得してデプロイできます。
 
