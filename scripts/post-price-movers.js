@@ -30,6 +30,39 @@ const STYLES = [
   '絵文字やユニークな表現を活用したスタイル。',
 ];
 
+const URL_PREFIXES = [
+  '全リストはこちら →',
+  '昭和の懐かしコモン一覧 →',
+  '他にも隠れたコモンいっぱい！ →',
+  '詳細はこちら →',
+  '値上がりコモン一覧 →',
+  'お宝コモン発見！ →',
+  '値上がりコモン一覧 →',
+  'もっとコモン見るなら →',
+  '昭和のコモンリスト →',
+  '掘り出しコモンは →',
+  'サイトで全部チェック →',
+  'コモン市場を覗く →',
+  '懐かしカードを探す →',
+  '全コモン一覧はこちら →',
+  '隠れたコモン続出 →',
+  '詳しいコモンはこちら →',
+  '価格チェックはこちら →',
+  'まだまだ眠ってるお宝 →',
+  'コモンのお宝を発掘！ →',
+  '全セット網羅！ →',
+  '気になるコモンを探す →',
+  'ほかにも高額コモンあり →',
+  '昭和MTGの宝物たち →',
+  'お宝コモン大集合！ →',
+  '全部見たい方はこちら →',
+  'レガシーの宝庫！ →',
+  'アンコモンも要チェック →',
+  'セット別に見るならこちら →',
+  '年代別に探すならこちら →',
+  'コレクター必見！ →',
+];
+
 // period → 日本語ラベルと値動キーのマッピング
 const PERIOD_META = {
   '24h': { label: '24時間', changeKey: 'priceChange24hr' },
@@ -116,9 +149,9 @@ async function generateTweetText(card, period) {
     `- 集計期間が「${periodLabel}」であることを自然な形で言及する`,
     '- 価格変化の表現には、提供した「変化率（例: +21.91%）」または「絶対値（例: +$1.08）」の数値をそのまま使うこと',
     '- 「○倍」「○割」などの倍率・割合表現は使わないこと（計算誤りを防ぐため）',
-    '- 「pic.twitter.com/」や「http」などURLは本文に一切含めないこと（画像はAPIで自動付与される）',
-    '- #昭和MTG は必ず含めること（最重要・絶対に省略不可）。その他のハッシュタグは最大2個まで自由に選ぶ',
-    '- 280文字以内に収める（Xの上限）',
+    '- 「pic.twitter.com/」などURLは本文に一切含めないこと（画像はAPIで自動付与、サイトURLは別途付加される）',
+    '- ハッシュタグは #mtg のみを含めること（他のハッシュタグは不要）',
+    '- 239文字以内に収める（URLとプレフィックステキストを別途付加するため余白を確保）',
     '- ツイート本文のみ出力（前置き・説明文は不要）',
     card.flavorText ? '- フレーバーテキストを引用してもよい（しなくてもよい）' : null,
     '',
@@ -319,7 +352,9 @@ async function main() {
   }
 
   console.log('[post-price-movers] Generating tweet with Gemini...');
-  const tweetText = await generateTweetText(card, period);
+  const generatedText = await generateTweetText(card, period);
+  const urlPrefix = pickRandom(URL_PREFIXES);
+  const tweetText = `${generatedText}\n${urlPrefix} https://mtg.syowa.workers.dev/`;
   console.log(`[post-price-movers] Tweet:\n${tweetText}`);
   console.log(`[post-price-movers] Length: ${tweetText.length} chars`);
 
