@@ -1,0 +1,10 @@
+{
+  "theme": "Default",
+  "coreTools": [
+    "read_file",
+    "write_file",
+    "run_shell_command",
+    "list_directory",
+    "search_files"
+  ]
+}

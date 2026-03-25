@@ -105,7 +105,7 @@ npm run deploy
 | 変数名 | 説明 |
 |--------|------|
 | `NEXT_PUBLIC_SITE_URL` | 本番サイトの URL（OG タグ・構造化データに使用） |
-| `JUSTTCG_API_KEY` | JustTCG API キー（値上がりカードデータ取得） |
+| `JUSTTCG_API_KEY` | JustTCG API キー（値上がりカードデータ取得）**※使用制限が厳しいためローカル開発では取得しない** |
 | `YOUTUBE_API_KEY` | YouTube Data API キー（動画データ取得） |
 | `CLOUDFLARE_API_TOKEN` | Cloudflare Workers デプロイ用 |
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare アカウント ID |
