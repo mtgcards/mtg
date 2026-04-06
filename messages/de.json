@@ -103,6 +103,7 @@
   },
   "about": {
     "title": "Über diese Seite",
+    "description": "Übersicht über die Showa MTG Sammlung wertvoller Common- und Uncommon-Karten: Funktionen, Datenquellen, Haftungsausschluss und FAQ.",
     "overview": "Überblick",
     "overviewText": "Diese Seite ist ein Dienst, der teure Karten aus dem Common- und Uncommon-Kartenpool erkundet, organisiert nach Ära und Set. Sie zielt darauf ab, ein Portal des gesammelten Wissens zu sein und den Geist des Syowa MTG wiederzubeleben.",
     "features": "Hauptfunktionen",
@@ -157,6 +158,7 @@
   },
   "privacy": {
     "title": "Datenschutzerklärung",
+    "description": "Datenschutzrichtlinie der Showa MTG Sammlung wertvoller Common- und Uncommon-Karten: Umgang mit Informationen, Sammlungszwecke und Drittanbieter-Dienste.",
     "lastUpdated": "Letzte Aktualisierung: 2. März 2026",
     "intro": "Diese Seite (nachfolgend 'die Seite') respektiert die Privatsphäre der Nutzer und bemüht sich um den Schutz persönlicher Daten. Diese Richtlinie erklärt, wie Informationen auf der Seite behandelt werden.",
     "collectTitle": "Erhobene Informationen",

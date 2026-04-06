@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { loadCardsForFormat } from '@/lib/cards';
-import { SITE_URL, DEFAULT_FORMAT, FORMAT_PAGE_TITLES } from '@/lib/constants';
+import { DEFAULT_FORMAT, FORMAT_PAGE_TITLES } from '@/lib/constants';
 import { buildFormatMetadata } from '@/lib/metadata';
 import CardPageLayout from '@/components/CardPageLayout';
 import { routing } from '@/i18n/routing';
@@ -21,7 +21,8 @@ export async function generateMetadata(
   const description = td(DEFAULT_FORMAT);
   const title = FORMAT_PAGE_TITLES[DEFAULT_FORMAT];
 
-  return buildFormatMetadata(label, description, SITE_URL, locale, title);
+  const pageUrl = `/${locale}`;
+  return buildFormatMetadata(label, description, pageUrl, locale, title);
 }
 
 export default async function HomePage(
@@ -34,5 +35,6 @@ export default async function HomePage(
   const t = await getTranslations({ locale, namespace: 'formats' });
   const label = t(DEFAULT_FORMAT);
 
-  return <CardPageLayout cards={cards} format={DEFAULT_FORMAT} label={label} pageUrl={SITE_URL} />;
+  const pageUrl = `/${locale}`;
+  return <CardPageLayout cards={cards} format={DEFAULT_FORMAT} label={label} pageUrl={pageUrl} />;
 }

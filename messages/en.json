@@ -103,6 +103,7 @@
   },
   "about": {
     "title": "About This Site",
+    "description": "Overview of the Showa MTG Valuable Commons & Uncommons Collection: features, data sources, disclaimer, and FAQ.",
     "overview": "Overview",
     "overviewText": "This site is a service that explores expensive cards from the Common and Uncommon card pool, organized by era and set. It aims to be a portal of accumulated knowledge, revitalizing the spirit of Syowa MTG.",
     "features": "Key Features",
@@ -157,6 +158,7 @@
   },
   "privacy": {
     "title": "Privacy Policy",
+    "description": "Privacy policy of the Showa MTG Valuable Commons & Uncommons Collection: information handling, collection purposes, and third-party services.",
     "lastUpdated": "Last updated: March 2, 2026",
     "intro": "This site (hereinafter \"the Site\") respects user privacy and strives to protect personal information. This policy explains how information is handled on the Site.",
     "collectTitle": "Information We Collect",

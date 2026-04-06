@@ -15,7 +15,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'videosPage' });
-  return buildFormatMetadata(t('label'), t('description'), `${SITE_URL}/videos`, locale);
+  return buildFormatMetadata(t('label'), t('description'), `/${locale}/videos`, locale);
 }
 
 export default async function VideosPage({ params }: { params: Promise<{ locale: string }> }) {

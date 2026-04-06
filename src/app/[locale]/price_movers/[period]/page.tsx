@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: PeriodPageProps): Promise<Met
   const periodLabel = t(period);
   const label = tp('label', { period: periodLabel });
   const description = tp('description', { period: periodLabel });
-  const pageUrl = `${SITE_URL}/price_movers/${period}`;
+  const pageUrl = `/${locale}/price_movers/${period}`;
   return buildFormatMetadata(label, description, pageUrl, locale);
 }
 
@@ -47,7 +47,7 @@ export default async function PriceMoversPeriodPage({ params }: PeriodPageProps)
   if (!isPriceMoverPeriod(period)) notFound();
 
   const data = fetchPriceMovers();
-  const pageUrl = `${SITE_URL}/price_movers/${period}`;
+  const pageUrl = `/${locale}/price_movers/${period}`;
 
   const t = await getTranslations({ locale, namespace: 'priceMovers.periods' });
   const tn = await getTranslations({ locale, namespace: 'nav' });

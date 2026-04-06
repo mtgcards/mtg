@@ -2,7 +2,8 @@ import { routing } from '@/i18n/routing';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { pageTitle } from '@/lib/constants';
+import { SITE_URL } from '@/lib/constants';
+import { buildPageMetadata } from '@/lib/metadata';
 import { FaqJsonLd } from '@/components/JsonLd';
 import '@/styles/about.css';
 
@@ -13,7 +14,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'about' });
-  return { title: pageTitle(t('title')) };
+  return buildPageMetadata(t('title'), t('description'), `/${locale}/about`, locale);
 }
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {

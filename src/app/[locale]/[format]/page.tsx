@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: FormatPageProps): Promise<Met
 
   const label = t(format);
   const description = td(format);
-  const pageUrl = `${SITE_URL}/${format}`;
+  const pageUrl = `/${locale}/${format}`;
   const title = tp.has(format) ? tp(format) : undefined;
 
   return buildFormatMetadata(label, description, pageUrl, locale, title);
@@ -55,7 +55,7 @@ export default async function FormatPage({ params }: FormatPageProps) {
   const cards = loadCardsForFormat(format);
   const t = await getTranslations({ locale, namespace: 'formats' });
   const label = t(format);
-  const pageUrl = `${SITE_URL}/${format}`;
+  const pageUrl = `/${locale}/${format}`;
 
   return <CardPageLayout cards={cards} format={format} label={label} pageUrl={pageUrl} />;
 }

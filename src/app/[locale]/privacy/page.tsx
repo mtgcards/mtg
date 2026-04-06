@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { pageTitle } from '@/lib/constants';
+import { SITE_URL } from '@/lib/constants';
+import { buildPageMetadata } from '@/lib/metadata';
 import '@/styles/privacy.css';
 import { routing } from '@/i18n/routing';
 
@@ -12,7 +13,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'privacy' });
-  return { title: pageTitle(t('title')) };
+  return buildPageMetadata(t('title'), t('description'), `/${locale}/privacy`, locale);
 }
 
 export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
