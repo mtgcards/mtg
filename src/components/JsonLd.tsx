@@ -117,17 +117,10 @@ export function ItemListJsonLd({ name, url, cards }: ItemListJsonLdProps) {
         '@type': 'ListItem',
         position: index + 1,
         item: {
-          '@type': 'Product',
+          '@type': 'CreativeWork',
           name: card.name,
           description: `${card.setName} - ${card.rarity.charAt(0).toUpperCase() + card.rarity.slice(1)} (Magic: The Gathering)`,
           ...(card.imageUrl ? { image: card.imageUrl } : {}),
-          offers: {
-            '@type': 'Offer',
-            price: price?.toFixed(2),
-            priceCurrency: currency,
-            availability: 'https://schema.org/InStock',
-            url: shopUrl,
-          },
         },
       };
     }),
