@@ -42,3 +42,4 @@ export interface YouTubeVideo {
   thumbnailUrl: string;
   viewCount: number | null;
 }
+
