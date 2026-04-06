@@ -5,13 +5,10 @@ const DEFAULT_RATES: ExchangeRates = { JPY: null, EUR: null };
 
 export async function fetchExchangeRates(): Promise<ExchangeRates> {
   try {
-    const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=JPY,EUR');
+    // 同じオリジンのAPI Route経由で取得（CORS回避）
+    const res = await fetch('/api/exchange');
     if (!res.ok) return DEFAULT_RATES;
-    const data = await res.json();
-    return {
-      JPY: data.rates?.JPY ?? null,
-      EUR: data.rates?.EUR ?? null,
-    };
+    return await res.json();
   } catch (err) {
     console.error('[exchange] Failed to fetch rates:', err);
     return DEFAULT_RATES;
