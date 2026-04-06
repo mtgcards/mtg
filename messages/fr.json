@@ -103,6 +103,7 @@
   },
   "about": {
     "title": "À propos de ce site",
+    "description": "Aperçu de la collection Showa MTG de Communes et Peu Communes de valeur : fonctionnalités, sources de données, avertissement et FAQ.",
     "overview": "Présentation",
     "overviewText": "Ce site est un service qui explore les cartes de grande valeur parmi les Communes et Peu Communes, organisées par époque et par édition. Il vise à être un portail de connaissances accumulées, ravivant l'esprit du Syowa MTG.",
     "features": "Fonctionnalités principales",
