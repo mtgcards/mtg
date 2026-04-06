@@ -5,6 +5,10 @@ on:
     - cron: '0 22/8 * * *'  # JST 7:00/17:00（UTC 22:00/8:00）
   workflow_dispatch:
 
+env:
+  # Node.js 24を先行して使用（2026年6月のデフォルト変更前に対応）
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -13,7 +17,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install dependencies
         run: npm ci

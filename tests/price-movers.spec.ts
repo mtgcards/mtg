@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 
+// 短い遅延（サーバー負荷分散用）- CIでは並列実行で分散されるため短縮
 const randomDelay = (minMs: number, maxMs: number): Promise<void> =>
   new Promise(resolve =>
     setTimeout(resolve, Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs)
@@ -9,7 +10,8 @@ const PERIODS = ['24h', '7d', '30d', '90d'] as const;
 
 for (const period of PERIODS) {
   test(`[${period}] ページが表示されカードが1件以上存在する`, async ({ page }) => {
-    await randomDelay(30_000, 150_000);
+    // 3〜8秒のランダム待機（並列実行時の負荷分散）
+    await randomDelay(3_000, 8_000);
     await page.goto(`/ja/price_movers/${period}`, { waitUntil: 'domcontentloaded' });
 
     // ページタイトルが表示される

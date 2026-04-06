@@ -1,12 +1,13 @@
 import { test, expect } from '@playwright/test';
 
+// 短い遅延（サーバー負荷分散用）- CIでは並列実行で分散されるため短縮
 const randomDelay = (minMs: number, maxMs: number): Promise<void> =>
   new Promise(resolve =>
     setTimeout(resolve, Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs)
   );
 
 test('動画ページが表示される', async ({ page }) => {
-  await randomDelay(30_000, 150_000);
+  await randomDelay(3_000, 8_000);
   await page.goto('/ja/videos', { waitUntil: 'domcontentloaded' });
 
   // ページタイトルが存在する
@@ -17,7 +18,7 @@ test('動画ページが表示される', async ({ page }) => {
 });
 
 test('動画カードにサムネイル・タイトル・チャンネル名が表示される', async ({ page }) => {
-  await randomDelay(30_000, 150_000);
+  await randomDelay(3_000, 8_000);
   await page.goto('/ja/videos', { waitUntil: 'domcontentloaded' });
 
   const firstCard = page.locator('.video-card').first();
@@ -27,7 +28,7 @@ test('動画カードにサムネイル・タイトル・チャンネル名が�
 });
 
 test('動画カードをクリックするとモーダルが開く', async ({ page }) => {
-  await randomDelay(30_000, 150_000);
+  await randomDelay(3_000, 8_000);
   await page.goto('/ja/videos', { waitUntil: 'domcontentloaded' });
 
   await page.locator('.video-card').first().click();
@@ -38,7 +39,7 @@ test('動画カードをクリックするとモーダルが開く', async ({ pa
 });
 
 test('モーダル内の iframe が YouTube 埋め込み URL を持つ', async ({ page }) => {
-  await randomDelay(30_000, 150_000);
+  await randomDelay(3_000, 8_000);
   await page.goto('/ja/videos', { waitUntil: 'domcontentloaded' });
 
   await page.locator('.video-card').first().click();
@@ -52,7 +53,7 @@ test('モーダル内の iframe が YouTube 埋め込み URL を持つ', async (
 });
 
 test('モーダルの閉じるボタンでモーダルが閉じる', async ({ page }) => {
-  await randomDelay(30_000, 150_000);
+  await randomDelay(3_000, 8_000);
   await page.goto('/ja/videos', { waitUntil: 'domcontentloaded' });
 
   await page.locator('.video-card').first().click();
@@ -65,7 +66,7 @@ test('モーダルの閉じるボタンでモーダルが閉じる', async ({ pa
 });
 
 test('YouTubeで見るリンクが正しい URL を持つ', async ({ page }) => {
-  await randomDelay(30_000, 150_000);
+  await randomDelay(3_000, 8_000);
   await page.goto('/ja/videos', { waitUntil: 'domcontentloaded' });
 
   await page.locator('.video-card').first().click();
