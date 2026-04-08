@@ -84,7 +84,9 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
           <p>
             {t.rich('contactText', {
               link: (chunks) => (
-                <Link href="/contact">{chunks}</Link>
+                <a href="https://x.com/syowamtg" target="_blank" rel="noopener noreferrer">
+                  {chunks}
+                </a>
               ),
             })}
           </p>

@@ -151,10 +151,7 @@
       }
     ],
     "operations": "À propos de l'opérateur",
-    "operationsText": "Ce site est géré par un particulier à titre de loisir. Il a été créé par un passionné de MTG né à l'ère Syowa qui collectionne les cartes Foil dans les formats Pauper, Legacy, Commander, Modern et Pioneer, comme outil pour rechercher facilement les Communes et Peu Communes de grande valeur.",
-    "openSource": "Open Source",
-    "openSourceText": "Le code source de ce site est disponible sur GitHub. Les signalements de bugs et suggestions d'amélioration sont bienvenus via les Issues ou ",
-    "openSourceSuffix": "."
+    "operationsText": "Ce site est géré par un particulier à titre de loisir. Il a été créé par un passionné de MTG né à l'ère Syowa qui collectionne les cartes Foil dans les formats Pauper, Legacy, Commander, Modern et Pioneer, comme outil pour rechercher facilement les Communes et Peu Communes de grande valeur."
   },
   "privacy": {
     "title": "Politique de confidentialité",
@@ -193,6 +190,6 @@
     "changeTitle": "Modifications de cette politique",
     "changeText": "Cette politique peut être modifiée sans préavis. Les modifications prennent effet dès leur publication sur cette page.",
     "contactTitle": "Contact",
-    "contactText": "Pour toute question concernant cette politique, veuillez nous contacter via la <link>page de contact</link>."
+    "contactText": "Pour toute question concernant cette politique, veuillez nous contacter via <link>X (Twitter)</link>."
   }
 }

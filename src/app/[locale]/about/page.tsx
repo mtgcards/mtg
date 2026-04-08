@@ -23,7 +23,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
   const t = await getTranslations({ locale, namespace: 'about' });
   const tc = await getTranslations({ locale, namespace: 'common' });
-  const tn = await getTranslations({ locale, namespace: 'nav' });
+
 
   const faqItems: { question: string; answer: string }[] = t.raw('faqItems');
   const featuresList: string[] = t.raw('featuresList');
@@ -95,22 +95,6 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
           <h2>{t('operations')}</h2>
           <p>{t('operationsText')}</p>
-
-          <h2>{t('openSource')}</h2>
-          <p>
-            {t('openSourceText')}
-            <Link href="/contact">{tn('contact')}</Link>
-            {t('openSourceSuffix')}
-          </p>
-          <p>
-            <a
-              href="https://github.com/mtgcards/mtg"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              github.com/mtgcards/mtg
-            </a>
-          </p>
 
           <Link href="/" className="back-link">
             &larr;<br />

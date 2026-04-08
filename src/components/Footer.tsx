@@ -16,7 +16,9 @@ export default async function Footer() {
       </p>
       <nav className="footer-nav">
         <Link href="/about">{tn('about')}</Link>
-        <Link href="/contact">{tn('contact')}</Link>
+        <a href="https://x.com/syowamtg" target="_blank" rel="noopener noreferrer">
+          {tn('contact')}
+        </a>
         <Link href="/privacy">{tn('privacy')}</Link>
         <LanguageSwitcher />
       </nav>

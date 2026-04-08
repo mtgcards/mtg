@@ -151,10 +151,7 @@
       }
     ],
     "operations": "Über den Betreiber",
-    "operationsText": "Diese Seite wird von einer Privatperson als Hobby betrieben. Sie wurde von einem in der Syowa-Ära geborenen MTG-Enthusiasten erstellt, der Foil-Karten in den Formaten Pauper, Legacy, Commander, Modern und Pioneer sammelt, als Werkzeug zur einfachen Suche nach teuren Commons und Uncommons.",
-    "openSource": "Open Source",
-    "openSourceText": "Der Quellcode dieser Seite ist auf GitHub verfügbar. Fehlerberichte und Verbesserungsvorschläge sind über Issues oder ",
-    "openSourceSuffix": " willkommen."
+    "operationsText": "Diese Seite wird von einer Privatperson als Hobby betrieben. Sie wurde von einem in der Syowa-Ära geborenen MTG-Enthusiasten erstellt, der Foil-Karten in den Formaten Pauper, Legacy, Commander, Modern und Pioneer sammelt, als Werkzeug zur einfachen Suche nach teuren Commons und Uncommons."
   },
   "privacy": {
     "title": "Datenschutzerklärung",
@@ -193,6 +190,6 @@
     "changeTitle": "Änderungen dieser Richtlinie",
     "changeText": "Diese Richtlinie kann ohne Vorankündigung geändert werden. Änderungen werden wirksam, sobald sie auf dieser Seite veröffentlicht werden.",
     "contactTitle": "Kontakt",
-    "contactText": "Bei Fragen zu dieser Richtlinie kontaktieren Sie uns bitte über die <link>Kontaktseite</link>."
+    "contactText": "Bei Fragen zu dieser Richtlinie kontaktieren Sie uns bitte über <link>X (Twitter)</link>."
   }
 }

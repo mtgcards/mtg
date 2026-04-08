@@ -151,10 +151,7 @@
       }
     ],
     "operations": "About the Operator",
-    "operationsText": "This site is operated by an individual as a hobby. It was created by a Syowa-era born MTG enthusiast who collects Foil cards across Pauper, Legacy, Commander, Modern, and Pioneer formats, as a tool to easily look up expensive Commons and Uncommons.",
-    "openSource": "Open Source",
-    "openSourceText": "The source code of this site is available on GitHub. Bug reports and improvement suggestions are welcome via Issues or ",
-    "openSourceSuffix": "."
+    "operationsText": "This site is operated by an individual as a hobby. It was created by a Syowa-era born MTG enthusiast who collects Foil cards across Pauper, Legacy, Commander, Modern, and Pioneer formats, as a tool to easily look up expensive Commons and Uncommons."
   },
   "privacy": {
     "title": "Privacy Policy",
@@ -193,6 +190,6 @@
     "changeTitle": "Changes to This Policy",
     "changeText": "This policy may be changed without notice. Changes become effective when posted on this page.",
     "contactTitle": "Contact",
-    "contactText": "For questions about this policy, please contact us via the <link>contact page</link>."
+    "contactText": "For questions about this policy, please contact us via <link>X (Twitter)</link>."
   }
 }
