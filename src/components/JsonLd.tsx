@@ -150,7 +150,9 @@ export function BreadcrumbJsonLd({ items }: BreadcrumbJsonLdProps) {
       '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      item: item.url,
+      item: {
+        '@id': item.url,
+      },
     })),
   };
   return (

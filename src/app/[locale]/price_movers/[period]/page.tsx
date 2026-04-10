@@ -47,20 +47,23 @@ export default async function PriceMoversPeriodPage({ params }: PeriodPageProps)
   if (!isPriceMoverPeriod(period)) notFound();
 
   const data = fetchPriceMovers();
-  const pageUrl = `/${locale}/price_movers/${period}`;
 
   const t = await getTranslations({ locale, namespace: 'priceMovers.periods' });
   const tn = await getTranslations({ locale, namespace: 'nav' });
   const tp = await getTranslations({ locale, namespace: 'priceMoversPage' });
   const ts = await getTranslations({ locale, namespace: 'site' });
 
+  const homeUrl = `${SITE_URL}/${locale}/`;
+  const priceMoversUrl = `${SITE_URL}/${locale}/price_movers/7d`;
+  const currentUrl = `${SITE_URL}/${locale}/price_movers/${period}`;
+
   return (
     <main>
       <BreadcrumbJsonLd
         items={[
-          { name: tn('home'), url: SITE_URL },
-          { name: tp('breadcrumb'), url: `${SITE_URL}/price_movers/7d` },
-          { name: t(period), url: pageUrl },
+          { name: tn('home'), url: homeUrl },
+          { name: tp('breadcrumb'), url: priceMoversUrl },
+          { name: t(period), url: currentUrl },
         ]}
       />
       <div className="top-bar">

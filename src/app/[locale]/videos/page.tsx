@@ -28,12 +28,15 @@ export default async function VideosPage({ params }: { params: Promise<{ locale:
   const ts = await getTranslations({ locale, namespace: 'site' });
   const tvp = await getTranslations({ locale, namespace: 'videosPage' });
 
+  const homeUrl = `${SITE_URL}/${locale}/`;
+  const videosUrl = `${SITE_URL}/${locale}/videos`;
+
   return (
     <main>
       <BreadcrumbJsonLd
         items={[
-          { name: tn('home'), url: SITE_URL },
-          { name: tvp('label'), url: `${SITE_URL}/videos` },
+          { name: tn('home'), url: homeUrl },
+          { name: tvp('label'), url: videosUrl },
         ]}
       />
       <div className="top-bar">

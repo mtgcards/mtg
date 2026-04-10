@@ -21,13 +21,18 @@ export default async function CardPageLayout({ cards, format, label, pageUrl }: 
   const listName = tp.has(format) ? tp(format) : tp('default', { label });
   const defaultFilteredCards = filterCardsByThreshold(cards, format, DEFAULT_THRESHOLDS);
 
+  // Extract locale from pageUrl (e.g., "/ja" or "/ja/y2004_2014" -> "ja")
+  const locale = pageUrl.split('/')[1] || 'ja';
+  const homeUrl = `${SITE_URL}/${locale}/`;
+  const currentUrl = `${SITE_URL}${pageUrl.startsWith('/') ? pageUrl : `/${pageUrl}`}`;
+
   return (
     <main>
-      <ItemListJsonLd name={listName} url={pageUrl} cards={defaultFilteredCards} />
+      <ItemListJsonLd name={listName} url={currentUrl} cards={defaultFilteredCards} />
       <BreadcrumbJsonLd
         items={[
-          { name: tn('home'), url: SITE_URL },
-          { name: label, url: pageUrl },
+          { name: tn('home'), url: homeUrl },
+          { name: label, url: currentUrl },
         ]}
       />
       <div className="top-bar">
