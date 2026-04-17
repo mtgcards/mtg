@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import { YouTubeVideo } from './types';
 
 interface VideosData {
@@ -7,13 +5,9 @@ interface VideosData {
   fetchedAt: string;
 }
 
+const modules = import.meta.glob('../generated/videos.json', { eager: true });
+const data = (modules['../generated/videos.json'] as { default?: VideosData } | undefined)?.default ?? { videos: [], fetchedAt: '' };
+
 export function fetchVideos(): VideosData {
-  const filePath = path.join(process.cwd(), 'src/generated/videos.json');
-  try {
-    const raw = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(raw) as VideosData;
-  } catch {
-    console.warn(`[videos] Could not read ${filePath}, returning empty data`);
-    return { videos: [], fetchedAt: '' };
-  }
+  return data;
 }
