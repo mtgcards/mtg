@@ -1,0 +1,57 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE_URL } from '@/lib/constants';
+import { t } from '@/lib/i18n';
+import TabBar from '@/components/react/TabBar';
+import PriceMoversGrid from '@/components/react/PriceMoversGrid';
+import BreadcrumbJsonLd from '@/components/astro/BreadcrumbJsonLd.astro';
+import { PriceMoverData, PERIOD_KEYS, isPriceMoverPeriod } from '@/lib/price-movers';
+import fs from 'fs';
+import path from 'path';
+
+function fetchPriceMovers(): PriceMoverData {
+  const filePath = path.join(process.cwd(), 'src/generated/price-movers.json');
+  const raw = fs.readFileSync(filePath, 'utf-8');
+  return JSON.parse(raw) as PriceMoverData;
+}
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return PERIOD_KEYS.map((period) => ({ params: { period } }));
+}
+
+const { period } = Astro.params;
+
+if (!isPriceMoverPeriod(period)) {
+  return Astro.redirect('/price_movers/7d');
+}
+
+const data = fetchPriceMovers();
+const periodLabel = t(`priceMovers.periods.${period}`);
+const label = t('priceMoversPage.label', { period: periodLabel });
+const description = t('priceMoversPage.description', { period: periodLabel });
+const pageUrl = `/price_movers/${period}`;
+const homeUrl = `${SITE_URL}/`;
+const priceMoversUrl = `${SITE_URL}/price_movers/7d`;
+const currentUrl = `${SITE_URL}${pageUrl}`;
+---
+
+<BaseLayout title={label} description={description} canonical={pageUrl} ogImage={`/og/price_movers_${period}.png`}>
+  <main>
+    <BreadcrumbJsonLd
+      items={[
+        { name: t('nav.home'), url: homeUrl },
+        { name: t('priceMoversPage.breadcrumb'), url: priceMoversUrl },
+        { name: periodLabel, url: currentUrl },
+      ]}
+    />
+    <div class="top-bar">
+      <div class="header-compact">
+        <h1>{t('site.name')}</h1>
+      </div>
+      <TabBar activeFormat="price_movers" client:load />
+      <PriceMoversGrid data={data} period={period} client:load />
+    </div>
+  </main>
+</BaseLayout>

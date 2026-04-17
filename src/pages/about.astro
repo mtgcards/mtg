@@ -1,0 +1,113 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE_URL } from '@/lib/constants';
+import { t, tRaw } from '@/lib/i18n';
+import FaqJsonLd from '@/components/astro/FaqJsonLd.astro';
+import BreadcrumbJsonLd from '@/components/astro/BreadcrumbJsonLd.astro';
+import TabBar from '@/components/react/TabBar';
+export const prerender = true;
+
+import '@/styles/about.css';
+
+const pageUrl = '/about';
+const homeUrl = `${SITE_URL}/`;
+const aboutUrl = `${SITE_URL}${pageUrl}`;
+
+const faqItems = tRaw('about.faqItems') as { question: string; answer: string }[];
+const featuresList = tRaw('about.featuresList') as string[];
+---
+
+<BaseLayout
+  title={t('about.title')}
+  description={t('about.description')}
+  canonical={pageUrl}
+  ogImage="/og/about.png"
+>
+  <main>
+    <FaqJsonLd items={faqItems} />
+    <BreadcrumbJsonLd
+      items={[
+        { name: t('nav.home'), url: homeUrl },
+        { name: t('about.title'), url: aboutUrl },
+      ]}
+    />
+    <div class="top-bar">
+      <div class="header-compact">
+        <h1>{t('site.name')}</h1>
+      </div>
+      <TabBar activeFormat="about" client:load />
+      <div class="scroll-wrapper">
+        <div class="scroll-roller top"></div>
+        <div class="scroll-body">
+          <h1>{t('about.title')}</h1>
+
+          <h2>{t('about.overview')}</h2>
+          <p>{t('about.overviewText')}</p>
+
+          <h2>{t('about.features')}</h2>
+          <ul>
+            {featuresList.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
+
+          <h2>{t('about.dataSources')}</h2>
+          <p>
+            {t('about.dataSourcesCard')}
+            <a href="https://scryfall.com" target="_blank" rel="noopener noreferrer">
+              Scryfall
+            </a>
+            {t('about.dataSourcesCardSuffix')}
+          </p>
+          <p>
+            {t('about.dataSourcesPriceMover')}
+            <a href="https://justtcg.com" target="_blank" rel="noopener noreferrer">
+              JustTCG
+            </a>
+            {t('about.dataSourcesPriceMoverSuffix')}
+          </p>
+          <p>
+            {t('about.dataSourcesExchange')}
+            <a href="https://www.frankfurter.app" target="_blank" rel="noopener noreferrer">
+              Frankfurter
+            </a>
+            {t('about.dataSourcesExchangeSuffix')}
+          </p>
+          <p>
+            {t('about.dataSourcesVideo')}
+            <a href="https://developers.google.com/youtube/v3" target="_blank" rel="noopener noreferrer">
+              YouTube Data API
+            </a>
+            {t('about.dataSourcesVideoSuffix')}
+          </p>
+
+          <h2>{t('about.disclaimer')}</h2>
+          <p>{t('about.disclaimerText')}</p>
+
+          <h2>{t('about.faq')}</h2>
+          <dl class="faq-list">
+            {faqItems.map((item) => (
+              <details key={item.question} class="faq-item">
+                <summary>{item.question}</summary>
+                <dd class="faq-answer">
+                  {item.answer.split('\n').map((para, i) => (
+                    <p key={i}>{para}</p>
+                  ))}
+                </dd>
+              </details>
+            ))}
+          </dl>
+
+          <h2>{t('about.operations')}</h2>
+          <p>{t('about.operationsText')}</p>
+
+          <a href="/" class="back-link">
+            &larr;<br />
+            {t('common.backToHomeScroll')}
+          </a>
+        </div>
+        <div class="scroll-roller bottom"></div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>

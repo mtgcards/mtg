@@ -4,19 +4,19 @@
 
 ## ビルドエラー
 
-### `MISSING_MESSAGE` エラー
+### `[i18n] Missing translation key: xxx`
 
-**症状**: `privacy.description (ja)` などのエラー
+**症状**: コンソールに警告が出て、画面にキー名がそのまま表示される
 
-**原因**: i18n翻訳キーが不足
+**原因**: `messages/ja.json` に翻訳キーが不足
 
 **解決**: 
 ```bash
-# messages/ja.json, en.json, fr.json, de.json に同じキーを追加
+# messages/ja.json に不足しているキーを追加
 # add-translation スキルを参照
 ```
 
-### `Failed to compile` - TypeScriptエラー
+### `Failed to compile` - TypeScript エラー
 
 **症状**: 型エラーでビルド失敗
 
@@ -37,11 +37,11 @@ npx tsc --noEmit --skipLibCheck
 
 **原因**: 
 - ネットワーク接続問題
-- CORSポリシー（本番環境）
+- API Route (`/api/exchange`) へのアクセス失敗
 
 **解決**:
 - 開発時: ネットワーク接続を確認、ページリロード
-- 本番時: `/api/exchange` API Route経由で取得しているか確認
+- 本番時: API Route が正常に動作しているか確認
 
 ### カードキー重複エラー
 
@@ -55,7 +55,7 @@ npx tsc --noEmit --skipLibCheck
 
 ## デプロイ問題
 
-### Cloudflare Workersデプロイ失敗
+### Cloudflare Workers デプロイ失敗
 
 **症状**: `wrangler deploy` 失敗
 
@@ -64,13 +64,13 @@ npx tsc --noEmit --skipLibCheck
    - `CLOUDFLARE_API_TOKEN`
    - `CLOUDFLARE_ACCOUNT_ID`
 2. `npm run build` が成功しているか
-3. `.open-next/` が生成されているか
+3. `dist/_worker.js/index.js` が生成されているか
 
-### APIデータ取得失敗
+### API データ取得失敗
 
 **症状**: 値上がりカードや動画が表示されない
 
-**原因**: APIキー未設定または期限切れ
+**原因**: API キー未設定または期限切れ
 
 **解決**:
 ```bash
@@ -89,6 +89,6 @@ cat .env
 **解決**:
 ```bash
 # クリーンビルド
-rm -rf .next .open-next src/generated
+rm -rf dist src/generated
 npm run build
 ```

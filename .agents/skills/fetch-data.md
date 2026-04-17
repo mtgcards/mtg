@@ -29,3 +29,4 @@ node scripts/fetch-videos.js
 
 - `src/generated/` は `.gitignore` に含まれるため git 管理外
 - Scryfall API はレート制限があるため連続呼び出しに注意
+- `npm run build` を実行すると、データ取得後に Astro ビルドと OG 画像生成も自動実行される

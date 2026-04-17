@@ -1,0 +1,61 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { ALL_FORMAT_KEYS, SITE_URL, DEFAULT_FORMAT } from '@/lib/constants';
+import { loadCardsForFormat } from '@/lib/cards';
+import { isFormatKey } from '@/lib/utils';
+import { t, tHas } from '@/lib/i18n';
+import CardGrid from '@/components/react/CardGrid';
+import TabBar from '@/components/react/TabBar';
+import ItemListJsonLd from '@/components/astro/ItemListJsonLd.astro';
+import BreadcrumbJsonLd from '@/components/astro/BreadcrumbJsonLd.astro';
+import { filterCardsByThreshold } from '@/lib/utils';
+import { DEFAULT_THRESHOLDS } from '@/lib/constants';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return ALL_FORMAT_KEYS
+    .filter((key) => key !== DEFAULT_FORMAT)
+    .map((format) => ({ params: { format } }));
+}
+
+const { format } = Astro.params;
+
+if (!isFormatKey(format)) {
+  return Astro.redirect('/');
+}
+
+const cards = loadCardsForFormat(format);
+const label = t(`formats.${format}`);
+const pageUrl = `/${format}`;
+const currentUrl = `${SITE_URL}${pageUrl}`;
+const homeUrl = `${SITE_URL}/`;
+const listName = tHas(`formatPageTitles.${format}`)
+  ? t(`formatPageTitles.${format}`)
+  : t('formatPageTitles.default', { label });
+const defaultFilteredCards = filterCardsByThreshold(cards, format, DEFAULT_THRESHOLDS);
+---
+
+<BaseLayout
+  title={listName}
+  description={t(`formatDescriptions.${format}`)}
+  canonical={pageUrl}
+  ogImage={`/og/${format}.png`}
+>
+  <main>
+    <ItemListJsonLd name={listName} url={currentUrl} cards={defaultFilteredCards} />
+    <BreadcrumbJsonLd
+      items={[
+        { name: t('nav.home'), url: homeUrl },
+        { name: label, url: currentUrl },
+      ]}
+    />
+    <div class="top-bar">
+      <div class="header-compact">
+        <h1>{t('site.name')}</h1>
+      </div>
+      <TabBar activeFormat={format} client:load />
+      <CardGrid cards={cards} format={format} client:load />
+    </div>
+  </main>
+</BaseLayout>

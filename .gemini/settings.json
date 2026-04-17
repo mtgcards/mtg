@@ -34,7 +34,7 @@
       "Bash(curl*)",
       "Bash(wrangler*)",
       "Bash(npx*)",
-      "Bash(npx opennextjs-cloudflare*)",
+      "Bash(npx astro*)",
       "Bash(npm run*)",
       "Bash(npm install)"
     ],

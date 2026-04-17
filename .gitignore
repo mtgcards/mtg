@@ -18,6 +18,8 @@
 
 # production
 /build
+/dist
+/.astro
 /src/generated/cards.json
 /src/generated/price-movers.json
 /src/generated/videos.json

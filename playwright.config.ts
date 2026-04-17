@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const baseURL = process.env.BASE_URL || 'http://localhost:3000';
+const baseURL = process.env.BASE_URL || 'http://localhost:4321';
 
 export default defineConfig({
   testDir: './tests',
@@ -43,8 +43,8 @@ export default defineConfig({
   // BASE_URL が外部URLの場合は webServer を起動しない
   ...(!process.env.BASE_URL && {
     webServer: {
-      command: 'npm run build && npm run start',
-      url: 'http://localhost:3000',
+      command: 'npm run build && python3 -m http.server 4321 --directory dist',
+      url: 'http://localhost:4321',
       reuseExistingServer: true,
       timeout: 120_000,
     },

@@ -12,7 +12,7 @@ for (const period of PERIODS) {
   test(`[${period}] ページが表示されカードが1件以上存在する`, async ({ page }) => {
     // 3〜8秒のランダム待機（並列実行時の負荷分散）
     await randomDelay(3_000, 8_000);
-    await page.goto(`/ja/price_movers/${period}`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`/price_movers/${period}`, { waitUntil: 'domcontentloaded' });
 
     // ページタイトルが表示される
     await expect(page.locator('h1')).toBeVisible();

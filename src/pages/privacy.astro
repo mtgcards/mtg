@@ -1,0 +1,103 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE_URL } from '@/lib/constants';
+import { t, tRaw } from '@/lib/i18n';
+import BreadcrumbJsonLd from '@/components/astro/BreadcrumbJsonLd.astro';
+import TabBar from '@/components/react/TabBar';
+export const prerender = true;
+
+import '@/styles/privacy.css';
+
+const pageUrl = '/privacy';
+const homeUrl = `${SITE_URL}/`;
+const privacyUrl = `${SITE_URL}${pageUrl}`;
+
+const collectItems = tRaw('privacy.collectItems') as string[];
+const purposeItems = tRaw('privacy.purposeItems') as string[];
+const externalItems = tRaw('privacy.externalItems') as string[];
+---
+
+<BaseLayout
+  title={t('privacy.title')}
+  description={t('privacy.description')}
+  canonical={pageUrl}
+  ogImage="/og/privacy.png"
+>
+  <main>
+    <BreadcrumbJsonLd
+      items={[
+        { name: t('nav.home'), url: homeUrl },
+        { name: t('privacy.title'), url: privacyUrl },
+      ]}
+    />
+    <div class="top-bar">
+      <div class="header-compact">
+        <h1>{t('site.name')}</h1>
+      </div>
+      <TabBar activeFormat="privacy" client:load />
+      <div class="cobble-frame">
+      <div class="cobble-inner">
+        <h1>{t('privacy.title')}</h1>
+        <p class="last-updated">{t('privacy.lastUpdated')}</p>
+
+        <p>{t('privacy.intro')}</p>
+
+        <h2>{t('privacy.collectTitle')}</h2>
+        <p>{t('privacy.collectIntro')}</p>
+        <ul>
+          {collectItems.map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ul>
+
+        <h2>{t('privacy.purposeTitle')}</h2>
+        <p>{t('privacy.purposeIntro')}</p>
+        <ul>
+          {purposeItems.map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ul>
+
+        <h2>{t('privacy.thirdPartyTitle')}</h2>
+        <p>{t('privacy.thirdPartyText')}</p>
+
+        <h2>{t('privacy.externalTitle')}</h2>
+        <p>{t('privacy.externalIntro')}</p>
+        <ul>
+          {externalItems.map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ul>
+
+        <h2>{t('privacy.cookieTitle')}</h2>
+        <p>{t('privacy.cookieText')}</p>
+
+        <h2>{t('privacy.analyticsTitle')}</h2>
+        <p>
+          当サイトではCloudflare Web Analyticsを使用しています。このサービスはCookieを使用せず、個人を特定する情報を収集しません。詳細は
+          <a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener noreferrer">
+            Cloudflare Web Analytics
+          </a>
+          のページをご確認ください。
+        </p>
+
+        <h2>{t('privacy.changeTitle')}</h2>
+        <p>{t('privacy.changeText')}</p>
+
+        <h2>{t('privacy.contactTitle')}</h2>
+        <p>
+          本ポリシーに関するご質問は、
+          <a href="https://x.com/syowamtg" target="_blank" rel="noopener noreferrer">
+            X（旧Twitter）
+          </a>
+          よりご連絡ください。
+        </p>
+
+        <a href="/" class="back-link">
+          {t('common.backToHome')}
+        </a>
+      </div>
+    </div>
+    </div>
+  </main>
+</BaseLayout>

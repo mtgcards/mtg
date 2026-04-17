@@ -1,25 +1,13 @@
 import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import js from "@eslint/js";
 
-const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
+export default defineConfig([
+  js.configs.recommended,
   {
+    files: ["**/*.{js,mjs,cjs,ts,tsx,astro}"],
     rules: {
-      "@next/next/no-img-element": "off",
+      "no-unused-vars": "warn",
     },
   },
-  // Override default ignores of eslint-config-next.
-  globalIgnores([
-    // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-    // Prebuild script uses CommonJS require()
-    "scripts/**",
-  ]),
+  globalIgnores(["dist/**", "node_modules/**", ".next/**", "scripts/**"]),
 ]);
-
-export default eslintConfig;

@@ -1,0 +1,48 @@
+---
+import { SITE_NAME, SITE_URL } from '@/lib/constants';
+import JsonLd from './JsonLd.astro';
+
+interface Props {
+  locale?: string;
+  description?: string;
+}
+
+const { locale = 'ja', description } = Astro.props;
+
+const orgId = `${SITE_URL}/#organization`;
+const availableLanguage = locale === 'ja' ? 'Japanese' : locale;
+
+const data = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      publisher: { '@id': orgId },
+    },
+    {
+      '@type': 'Organization',
+      '@id': orgId,
+      name: SITE_NAME,
+      url: SITE_URL,
+      ...(description ? { description } : {}),
+      contactPoint: {
+        '@type': 'ContactPoint',
+        url: `${SITE_URL}/contact`,
+        contactType: 'customer support',
+        availableLanguage,
+      },
+      knowsAbout: [
+        'Magic: The Gathering',
+        'Trading Card Game',
+        'MTG Card Prices',
+        'Pauper',
+      ],
+    },
+  ],
+};
+---
+
+<JsonLd data={data} />

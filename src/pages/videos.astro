@@ -1,0 +1,40 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE_URL } from '@/lib/constants';
+import { t } from '@/lib/i18n';
+import TabBar from '@/components/react/TabBar';
+import VideoGrid from '@/components/react/VideoGrid';
+import BreadcrumbJsonLd from '@/components/astro/BreadcrumbJsonLd.astro';
+export const prerender = true;
+
+import { fetchVideos } from '@/lib/videos';
+
+const { videos } = fetchVideos();
+const pageUrl = '/videos';
+const homeUrl = `${SITE_URL}/`;
+const videosUrl = `${SITE_URL}${pageUrl}`;
+---
+
+<BaseLayout
+  title={t('videosPage.label')}
+  description={t('videosPage.description')}
+  canonical={pageUrl}
+  ogImage="/og/videos.png"
+>
+  <main>
+    <BreadcrumbJsonLd
+      items={[
+        { name: t('nav.home'), url: homeUrl },
+        { name: t('videosPage.label'), url: videosUrl },
+      ]}
+    />
+    <div class="top-bar">
+      <div class="header-compact">
+        <h1>{t('site.name')}</h1>
+      </div>
+      <TabBar activeFormat="videos" client:load />
+      <h2 class="page-section-title">{t('videos.sectionTitle')}</h2>
+      <VideoGrid videos={videos} client:load />
+    </div>
+  </main>
+</BaseLayout>

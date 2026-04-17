@@ -1,0 +1,3 @@
+name = "mtg"
+main = "dist/_worker.js/index.js"
+compatibility_date = "2025-04-17"

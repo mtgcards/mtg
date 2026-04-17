@@ -1,0 +1,32 @@
+---
+import JsonLd from './JsonLd.astro';
+import type { SerializedCard } from '@/lib/types';
+
+interface Props {
+  name: string;
+  url: string;
+  cards: SerializedCard[];
+}
+
+const { name, url, cards } = Astro.props;
+
+const data = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name,
+  url,
+  numberOfItems: cards.length,
+  itemListElement: cards.map((card, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    item: {
+      '@type': 'CreativeWork',
+      name: card.name,
+      description: `${card.setName} - ${card.rarity.charAt(0).toUpperCase() + card.rarity.slice(1)} (Magic: The Gathering)`,
+      ...(card.imageUrl ? { image: card.imageUrl } : {}),
+    },
+  })),
+};
+---
+
+<JsonLd data={data} />

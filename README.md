@@ -2,7 +2,7 @@
 
 **公開URL: https://mtg.syowa.workers.dev/**
 
-Scryfall API を使って MTG のコモン・アンコモン・基本土地・トークン・FOIL カードの中から高値のものを年代別・セット別に一覧表示する Web アプリ。日本語・英語・フランス語・ドイツ語の4言語に対応。
+Scryfall API を使って MTG のコモン・アンコモン・基本土地・トークン・FOIL カードの中から高値のものを年代別・セット別に一覧表示する Web アプリ。日本語対応。
 
 ## 機能
 
@@ -16,7 +16,7 @@ Scryfall API を使って MTG のコモン・アンコモン・基本土地・�
 - 値上がりカードランキング（24時間・1週間・1ヶ月・3ヶ月）— JustTCG API
 - YouTube 動画一覧
 - お問い合わせフォーム（Formspree）
-- 多言語対応（ja / en / fr / de）— next-intl による i18n
+- 日本語対応 — 自前の簡易 i18n ユーティリティ
 - Cloudflare Web Analytics（Cookie 不使用）
 
 ## タブ一覧
@@ -37,27 +37,25 @@ Scryfall API を使って MTG のコモン・アンコモン・基本土地・�
 
 | ページ | URL |
 |--------|-----|
-| 値上がりカード | `/{locale}/price_movers` / `/{locale}/price_movers/{period}` |
-| YouTube動画 | `/{locale}/videos` |
-| このサイトについて | `/{locale}/about` |
-| お問い合わせ | `/{locale}/contact` |
-| プライバシーポリシー | `/{locale}/privacy` |
+| 値上がりカード | `/price_movers` / `/price_movers/{period}` |
+| YouTube動画 | `/videos` |
+| このサイトについて | `/about` |
+| お問い合わせ | `/contact` |
+| プライバシーポリシー | `/privacy` |
 
 ## ルーティング構成
 
 ```
-https://mtg.syowa.workers.dev/             ← デフォルトロケールへリダイレクト
-https://mtg.syowa.workers.dev/{locale}/    ← 言語別トップ（1995〜2003）
-https://mtg.syowa.workers.dev/{locale}/{format}  ← 言語別フォーマット
-https://mtg.syowa.workers.dev/{locale}/price_movers
-https://mtg.syowa.workers.dev/{locale}/price_movers/{period}
-https://mtg.syowa.workers.dev/{locale}/videos
-https://mtg.syowa.workers.dev/{locale}/about
-https://mtg.syowa.workers.dev/{locale}/contact
-https://mtg.syowa.workers.dev/{locale}/privacy
+https://mtg.syowa.workers.dev/             ← トップ（1995〜2003）
+https://mtg.syowa.workers.dev/{format}  ← 各フォーマット
+https://mtg.syowa.workers.dev/price_movers
+https://mtg.syowa.workers.dev/price_movers/{period}
+https://mtg.syowa.workers.dev/videos
+https://mtg.syowa.workers.dev/about
+https://mtg.syowa.workers.dev/contact
+https://mtg.syowa.workers.dev/privacy
 ```
 
-`{locale}` = `ja` / `en` / `fr` / `de`  
 `{format}` = `y1995_2003`(default) / `y2004_2014` / `y2015_2020` / `y2021_2022` / `y2023_2025` / `y2026_` / `basic_land` / `token` / `foil`  
 `{period}` = `24h` / `7d` / `30d` / `90d`
 
@@ -83,7 +81,7 @@ npm run dev
 ## ビルド・デプロイ
 
 ```bash
-# カードデータ・価格データ・動画データ取得 + Next.js ビルド
+# カードデータ・価格データ・動画データ取得 + Astro ビルド + OG画像生成
 npm run build
 
 # Cloudflare Workers へデプロイ
@@ -99,6 +97,8 @@ npm run deploy
 | `scripts/fetch-videos.js` | YouTube Data API | `src/generated/videos.json` |
 
 `SKIP_PREBUILD=true` を設定すると prebuild をスキップします（GitHub Actions での再実行防止に使用）。
+
+OG画像は `scripts/generate-og-images.js`（Satori + @resvg/resvg-js）でビルド後に生成されます。
 
 ### 環境変数
 
@@ -127,20 +127,27 @@ npm run deploy
 
 ```
 src/
-  app/
-    [locale]/         ← i18nルーティング（next-intl）
-      [format]/       ← 各フォーマットページ
+  pages/              ← Astroファイルベースルーティング
+    ja/               ← 日本語ページ
+      [format].astro
+      index.astro
       price_movers/
-      videos/
-      about/
-      contact/
-      privacy/
-  components/         ← 共通 UI コンポーネント
-  lib/                ← 型定義・ユーティリティ・定数
-  i18n/               ← next-intl 設定・ナビゲーション
+      videos.astro
+      about.astro
+      contact.astro
+      privacy.astro
+    feed.xml.ts
+    api/
+      exchange.ts
+  layouts/            ← Astro レイアウト
+    BaseLayout.astro
+  components/
+    astro/            ← Astro 専用コンポーネント（JSON-LD 等）
+    react/            ← React Islands コンポーネント
+  lib/                ← 型定義・ユーティリティ・定数・簡易 i18n
   styles/             ← ページ・コンポーネントの CSS
-messages/             ← i18n 翻訳ファイル（ja / en / fr / de）
-scripts/              ← プリビルド・データ取得スクリプト
+messages/             ← i18n 翻訳ファイル（ja のみ）
+scripts/              ← プリビルド・データ取得・OG画像生成スクリプト
 public/               ← 静的アセット
 ```
 
@@ -158,12 +165,12 @@ public/               ← 静的アセット
 
 ## 使用技術・データソース
 
-- [Next.js](https://nextjs.org/)（App Router）+ React + TypeScript
-- [next-intl](https://next-intl-docs.vercel.app/) — i18n（日英仏独 4言語）
-- [@opennextjs/cloudflare](https://opennext.js.org/cloudflare) — Cloudflare Workers へのデプロイ
+- [Astro](https://astro.build/) 6 + React Islands + TypeScript
+- [@astrojs/cloudflare](https://docs.astro.build/guides/integrations-guide/cloudflare/) — Cloudflare Workers へのデプロイ
 - [Scryfall API](https://scryfall.com/docs/api) — カードデータ・画像・価格情報
 - [JustTCG API](https://justtcg.com/) — 値上がりカード価格データ
 - [YouTube Data API](https://developers.google.com/youtube/v3) — YouTube 動画データ
 - [Frankfurter API](https://www.frankfurter.app/) — USD/JPY/EUR 為替レート
+- [Satori](https://github.com/vercel/satori) + [@resvg/resvg-js](https://github.com/yisibl/resvg-js) — OG 画像生成
 - [Formspree](https://formspree.io/) — お問い合わせフォーム送信処理
 - [Cloudflare Web Analytics](https://www.cloudflare.com/web-analytics/) — Cookie 不使用のアクセス解析

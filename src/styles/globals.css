@@ -1,5 +1,9 @@
 /* ===== Design Tokens ===== */
 :root {
+  /* Fonts */
+  --font-cinzel: 'Cinzel', serif;
+  --font-medieval-sharp: 'MedievalSharp', cursive;
+
   /* Primary accent */
   --gold:         #d4a017;
   --gold-light:   #ffe699;
@@ -57,6 +61,24 @@ main {
   width: 100%;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ===== Top Bar ===== */
+.top-bar {
+  position: relative;
+}
+
+.top-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 40px;
+  background: linear-gradient(to right, transparent, #1a0e05);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 /* ===== Tab Bar (Worn leather bookmark tabs) ===== */
@@ -177,16 +199,41 @@ main {
 
 /* ===== Price Threshold Bar ===== */
 .price-threshold-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  align-items: center;
   padding: 0.8rem 1rem;
   margin-bottom: 0.5rem;
   background: rgba(43, 26, 14, 0.6);
   border: 2px solid #4a2e15;
   border-radius: 6px;
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.threshold-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.threshold-toggle {
+  display: none;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0;
+  background: linear-gradient(to bottom, #4a2e15, #2b1a0e);
+  color: #d4a017;
+  border: 1px solid #1a0e05;
+  border-radius: 4px;
+  font-family: var(--font-cinzel), serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s, color 0.2s;
+}
+
+.threshold-toggle:hover {
+  background: linear-gradient(to bottom, #5a3a20, #2b1a0e);
+  color: #ffe699;
 }
 
 .price-threshold-bar label {
@@ -1050,16 +1097,54 @@ footer a:hover {
   border-color: #d4a017;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   main {
     padding: 1rem 0.75rem 3rem;
   }
 
+  .top-bar::after {
+    opacity: 1;
+  }
+
   .tab-btn {
-    padding: 0.5rem 0.8rem;
-    font-size: 0.8rem;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.85rem;
     letter-spacing: 0;
+    min-width: 48px;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tab-btn.active {
+    border-bottom-width: 3px;
+  }
+
+  .threshold-toggle {
+    display: block;
+  }
+
+  .threshold-content {
+    display: none;
+    padding-top: 0.6rem;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .price-threshold-bar.open .threshold-content {
+    display: flex;
   }
 }
 
@@ -1091,8 +1176,14 @@ footer a:hover {
   }
 
   .tab-btn {
-    padding: 0.45rem 0.6rem;
-    font-size: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.8rem;
+    min-width: 44px;
+    min-height: 38px;
+  }
+
+  .tab-btn.active {
+    border-bottom-width: 3px;
   }
 
   .back-to-top {

@@ -6,8 +6,8 @@ Cloudflare Workers へビルド＆デプロイする。
 npm run deploy
 ```
 
-内部で `opennextjs-cloudflare build && opennextjs-cloudflare deploy` を実行。
-事前に `npm run build` でデータ取得 + Next.js ビルドを完了させておくこと。
+内部で `astro build && wrangler deploy` を実行。
+事前に `npm run build` でデータ取得 + Astro ビルドを完了させておくこと。
 
 フルフローでデプロイする場合：
 
