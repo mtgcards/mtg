@@ -11,7 +11,7 @@
     "pretest": "playwright install chromium",
     "test": "playwright test",
     "og:generate": "node scripts/generate-og-images.js",
-    "deploy": "astro build && wrangler deploy"
+    "deploy": "astro build && wrangler deploy --config dist/server/wrangler.json"
   },
   "dependencies": {
     "astro": "^6.0.0",
