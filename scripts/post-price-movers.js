@@ -278,29 +278,22 @@ async function uploadMedia(imageBuffer, mimeType = 'image/jpeg') {
 // ---- Post Tweet (v2) ----
 
 async function postTweet(text, mediaIds = []) {
-  const url = 'https://api.twitter.com/1.1/statuses/update.json';
+  const url = 'https://api.x.com/2/tweets';   // ← ここを api.x.com に変更！
 
-  const bodyParams = {
-    status: text,
-  };
+  const payload = { text };
   if (mediaIds.length > 0) {
-    bodyParams.media_ids = mediaIds.join(',');
+    payload.media = { media_ids: mediaIds };
   }
 
-  const oauthHeader = buildOAuthHeader('POST', url, bodyParams);
-
-  const form = new URLSearchParams();
-  Object.keys(bodyParams).forEach((key) => {
-    form.append(key, bodyParams[key]);
-  });
+  const oauthHeader = buildOAuthHeader('POST', url, {});
 
   const res = await fetch(url, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
       Authorization: oauthHeader,
     },
-    body: form,
+    body: JSON.stringify(payload),
   });
 
   if (!res.ok) {
