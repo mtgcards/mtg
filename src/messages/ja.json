@@ -89,6 +89,16 @@
     "label": "動画",
     "description": "MTGのレガシー・ヴィンテージ・プレモダン・パウパーなどの関連動画を新着順で表示。"
   },
+  "setPage": {
+    "title": "{setName} | 昭和MTG 高額コモン&アンコモン貴重品室",
+    "description": "{setName}（{year}年発売）の高額コモン・アンコモン・基本土地・トークン・FOILカードを一覧表示。",
+    "common": "コモン",
+    "uncommon": "アンコモン",
+    "basicLand": "基本土地",
+    "token": "トークン",
+    "foil": "FOIL",
+    "noCards": "表示できるカードがありません。"
+  },
   "thresholds": {
     "common": "Common Price Threshold:",
     "uncommon": "Uncommon Price Threshold:",

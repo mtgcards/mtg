@@ -33,7 +33,9 @@ export default function SetSection({
     <section className="set-section" id={sectionId}>
       <h2 className="set-title">
         <SetSymbol setCode={setCode} />
-        {label}
+        <a href={`/set/${setCode}`} className="set-title-link">
+          {label}
+        </a>
       </h2>
       <div className="set-card-grid">
         {cards.map((card) => (

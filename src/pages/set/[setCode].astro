@@ -1,0 +1,64 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE_URL } from '@/lib/constants';
+import { loadAllCards, getAllSetCodes, getSetInfo } from '@/lib/cards';
+import { t } from '@/lib/i18n';
+import SetPageCardList from '@/components/react/SetPageCardList';
+import TabBar from '@/components/react/TabBar';
+import ItemListJsonLd from '@/components/astro/ItemListJsonLd.astro';
+import BreadcrumbJsonLd from '@/components/astro/BreadcrumbJsonLd.astro';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  const setCodes = getAllSetCodes();
+  return setCodes.map((setCode) => ({ params: { setCode } }));
+}
+
+const { setCode } = Astro.params;
+const setInfo = getSetInfo(setCode);
+
+if (!setInfo) {
+  return Astro.redirect('/');
+}
+
+const allCards = loadAllCards();
+const setCards = allCards.filter((c) => c.set === setCode);
+const pageUrl = `/set/${setCode}`;
+const currentUrl = `${SITE_URL}${pageUrl}`;
+const homeUrl = `${SITE_URL}/`;
+const pageTitle = t('setPage.title', { setName: setInfo.setName });
+const pageDescription = t('setPage.description', { setName: setInfo.setName, year: setInfo.releasedAt.substring(0, 4) });
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={pageUrl}
+  ogImage={`/og/set_${setCode}.png`}
+>
+  <main>
+    <ItemListJsonLd name={pageTitle} url={currentUrl} cards={setCards} />
+    <BreadcrumbJsonLd
+      items={[
+        { name: t('nav.home'), url: homeUrl },
+        { name: setInfo.setName, url: currentUrl },
+      ]}
+    />
+    <div class="top-bar">
+      <div class="header-compact">
+        <a href="/" class="site-name-link">
+          <h1>{t('site.name')}</h1>
+        </a>
+      </div>
+      <TabBar client:load />
+      <SetPageCardList
+        setName={setInfo.setName}
+        setCode={setCode}
+        releasedAt={setInfo.releasedAt}
+        cards={setCards}
+        client:load
+      />
+    </div>
+  </main>
+</BaseLayout>

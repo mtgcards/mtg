@@ -4,6 +4,7 @@ const satori = require('satori').default;
 const { Resvg } = require('@resvg/resvg-js');
 
 const messages = require('../src/messages/ja.json');
+const cardsJson = require('../src/generated/cards.json');
 
 const SITE_NAME = '\u662d\u548cMTG \u9ad8\u984d\u30b3\u30e2\u30f3&\u30a2\u30f3\u30b3\u30e2\u30f3\u8cb4\u91cd\u54c1\u5ba4';
 const ALL_FORMAT_KEYS = [
@@ -18,6 +19,18 @@ const ALL_FORMAT_KEYS = [
   'foil',
 ];
 const PERIOD_KEYS = ['24h', '7d', '30d', '90d'];
+
+function getSetInfos() {
+  const map = new Map();
+  for (const cards of Object.values(cardsJson)) {
+    for (const card of cards) {
+      if (!map.has(card.set)) {
+        map.set(card.set, { setName: card.setName, releasedAt: card.releasedAt });
+      }
+    }
+  }
+  return Array.from(map.entries()).map(([setCode, info]) => ({ setCode, ...info }));
+}
 
 const OG_SIZE = { width: 1200, height: 630 };
 const OUTPUT_DIR = path.join(process.cwd(), 'public', 'og');
@@ -204,6 +217,15 @@ async function main() {
     font,
     path.join(OUTPUT_DIR, 'privacy.png')
   );
+
+  // Set pages
+  const setInfos = getSetInfos();
+  for (const { setCode, setName, releasedAt } of setInfos) {
+    const year = releasedAt ? releasedAt.substring(0, 4) : '';
+    const title = `${setName} | ${SITE_NAME}`;
+    const desc = `${setName}（${year}年発売）の高額コモン・アンコモン・基本土地・トークン・FOILカードを一覧表示。`;
+    await generateOgImage(title, desc, font, path.join(OUTPUT_DIR, `set_${setCode}.png`));
+  }
 
   console.log('[og] All OG images generated successfully.');
 }

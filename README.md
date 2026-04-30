@@ -37,6 +37,7 @@ Scryfall API を使って MTG のコモン・アンコモン・基本土地・�
 
 | ページ | URL |
 |--------|-----|
+| エキスパンション別 | `/set/{setCode}` |
 | 値上がりカード | `/price_movers` / `/price_movers/{period}` |
 | YouTube動画 | `/videos` |
 | このサイトについて | `/about` |
@@ -47,7 +48,8 @@ Scryfall API を使って MTG のコモン・アンコモン・基本土地・�
 
 ```
 https://mtg.syowa.workers.dev/             ← トップ（1995〜2003）
-https://mtg.syowa.workers.dev/{format}  ← 各フォーマット
+https://mtg.syowa.workers.dev/{format}     ← 各フォーマット
+https://mtg.syowa.workers.dev/set/{setCode} ← エキスパンション別
 https://mtg.syowa.workers.dev/price_movers
 https://mtg.syowa.workers.dev/price_movers/{period}
 https://mtg.syowa.workers.dev/videos
@@ -57,7 +59,8 @@ https://mtg.syowa.workers.dev/privacy
 ```
 
 `{format}` = `y1995_2003`(default) / `y2004_2014` / `y2015_2020` / `y2021_2022` / `y2023_2025` / `y2026_` / `basic_land` / `token` / `foil`  
-`{period}` = `24h` / `7d` / `30d` / `90d`
+`{period}` = `24h` / `7d` / `30d` / `90d`  
+`{setCode}` = Scryfall セットコード（例: `mmq`, `ice`）
 
 ## 除外セット
 
@@ -157,7 +160,8 @@ public/               ← 静的アセット
 |---|---|
 | `CardGrid.tsx` | アクティブなカード一覧（閾値フィルタ・通貨・ショップ切替） |
 | `CardItem.tsx` | カード1枚のカードUI（値上がり・セット名表示にも対応） |
-| `SetSection.tsx` | セット単位のカードグリッド |
+| `SetSection.tsx` | セット単位のカードグリッド（セットページへのリンク付き） |
+| `SetPageCardList.tsx` | エキスパンション個別ページのカード一覧（カテゴリ別表示） |
 | `PriceMoversGrid.tsx` | 値上がりカード一覧（CardItem 共通化） |
 | `VideoGrid.tsx` | YouTube動画一覧（モーダルプレイヤー付き） |
 | `TabBar.tsx` | タブナビゲーション |

@@ -11,7 +11,8 @@ import { FormatKey, Currency, Shop, ThresholdKey } from '@/lib/types';
 import CurrencyShopSelector from './CurrencyShopSelector';
 
 interface ThresholdBarProps {
-  format: FormatKey;
+  format?: FormatKey;
+  visibleKeys?: ThresholdKey[];
   thresholds: Record<ThresholdKey, number>;
   currency: Currency;
   shop: Shop;
@@ -22,6 +23,7 @@ interface ThresholdBarProps {
 
 export default function ThresholdBar({
   format,
+  visibleKeys: visibleKeysProp,
   thresholds,
   currency,
   shop,
@@ -30,7 +32,11 @@ export default function ThresholdBar({
   onShopChange,
 }: ThresholdBarProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const visibleKeys = THRESHOLD_VISIBILITY[format] || DEFAULT_THRESHOLD_KEYS;
+  const visibleKeys =
+    visibleKeysProp ??
+    (format
+      ? (THRESHOLD_VISIBILITY[format] || DEFAULT_THRESHOLD_KEYS)
+      : (Object.keys(THRESHOLD_OPTIONS) as ThresholdKey[]));
 
   return (
     <div className={`price-threshold-bar${isOpen ? ' open' : ''}`}>

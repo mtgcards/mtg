@@ -5,7 +5,7 @@ import { ALL_FORMAT_KEYS, DEFAULT_FORMAT } from '@/lib/constants';
 import { TabKey } from '@/lib/types';
 
 interface TabBarProps {
-  activeFormat: TabKey;
+  activeFormat?: TabKey;
 }
 
 export default function TabBar({ activeFormat }: TabBarProps) {
