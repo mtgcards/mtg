@@ -35,9 +35,9 @@ function getSetInfos() {
 const OG_SIZE = { width: 1200, height: 630 };
 const OUTPUT_DIR = path.join(process.cwd(), 'public', 'og');
 
-async function loadCinzelFont() {
+async function fetchGoogleFont(family, weight) {
   const css = await fetch(
-    'https://fonts.googleapis.com/css2?family=Cinzel:wght@700',
+    `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}:wght@${weight}`,
     {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0',
@@ -46,9 +46,15 @@ async function loadCinzelFont() {
   ).then((r) => r.text());
 
   const match = css.match(/url\((https:\/\/fonts\.gstatic\.com[^)]+)\)/);
-  if (!match) throw new Error('[og] Cinzel font URL not found');
+  if (!match) throw new Error(`[og] ${family} font URL not found`);
   const buffer = await fetch(match[1]).then((r) => r.arrayBuffer());
-  return { name: 'Cinzel', data: buffer, weight: 700, style: 'normal' };
+  return { name: family, data: buffer, weight, style: 'normal' };
+}
+
+async function loadFonts() {
+  const cinzel = await fetchGoogleFont('Cinzel', 700);
+  const notoSansJP = await fetchGoogleFont('Noto Sans JP', 700);
+  return [cinzel, notoSansJP];
 }
 
 function titleFontSize(len) {
@@ -58,7 +64,7 @@ function titleFontSize(len) {
   return 30;
 }
 
-async function generateOgImage(title, description, font, outputFile) {
+async function generateOgImage(title, description, fonts, outputFile) {
   const svg = await satori(
     {
       type: 'div',
@@ -97,7 +103,7 @@ async function generateOgImage(title, description, font, outputFile) {
                     fontSize: 19,
                     color: '#d4a017',
                     letterSpacing: 3,
-                    fontFamily: 'Cinzel',
+                    fontFamily: 'Cinzel, "Noto Sans JP"',
                   },
                   children: [
                     { type: 'div', props: { children: '◆' } },
@@ -118,7 +124,7 @@ async function generateOgImage(title, description, font, outputFile) {
                   style: {
                     fontSize: titleFontSize(title.length),
                     color: '#ffe699',
-                    fontFamily: 'Cinzel',
+                    fontFamily: 'Cinzel, "Noto Sans JP"',
                     fontWeight: 700,
                     textAlign: 'center',
                     lineHeight: 1.35,
@@ -133,7 +139,7 @@ async function generateOgImage(title, description, font, outputFile) {
                       style: {
                         fontSize: 21,
                         color: '#c0b090',
-                        fontFamily: 'Cinzel',
+                        fontFamily: 'Cinzel, "Noto Sans JP"',
                         textAlign: 'center',
                         lineHeight: 1.55,
                         marginTop: 4,
@@ -150,7 +156,7 @@ async function generateOgImage(title, description, font, outputFile) {
     {
       width: OG_SIZE.width,
       height: OG_SIZE.height,
-      fonts: [font],
+      fonts,
     }
   );
 
@@ -164,18 +170,18 @@ async function generateOgImage(title, description, font, outputFile) {
 
 async function main() {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-  const font = await loadCinzelFont();
+  const fonts = await loadFonts();
 
   // Default (top page)
   const defaultTitle = messages.formatPageTitles['y1995_2003'] || SITE_NAME;
   const defaultDesc = messages.formatDescriptions['y1995_2003'];
-  await generateOgImage(defaultTitle, defaultDesc, font, path.join(OUTPUT_DIR, 'default.png'));
+  await generateOgImage(defaultTitle, defaultDesc, fonts, path.join(OUTPUT_DIR, 'default.png'));
 
   // Format pages
   for (const key of ALL_FORMAT_KEYS) {
     const title = messages.formatPageTitles[key] || `${messages.formats[key]} 高額コモン・アンコモン`;
     const desc = messages.formatDescriptions[key];
-    await generateOgImage(title, desc, font, path.join(OUTPUT_DIR, `${key}.png`));
+    await generateOgImage(title, desc, fonts, path.join(OUTPUT_DIR, `${key}.png`));
   }
 
   // Price movers periods
@@ -183,14 +189,14 @@ async function main() {
     const periodLabel = messages.priceMovers.periods[period];
     const title = `値上がり（${periodLabel}）`;
     const desc = `MTGのコモン・アンコモンカードで${periodLabel}の値上がりが大きいカードをランキング表示。`;
-    await generateOgImage(title, desc, font, path.join(OUTPUT_DIR, `price_movers_${period}.png`));
+    await generateOgImage(title, desc, fonts, path.join(OUTPUT_DIR, `price_movers_${period}.png`));
   }
 
   // Videos
   await generateOgImage(
     messages.videosPage.label,
     messages.videosPage.description,
-    font,
+    fonts,
     path.join(OUTPUT_DIR, 'videos.png')
   );
 
@@ -198,7 +204,7 @@ async function main() {
   await generateOgImage(
     messages.about.title,
     messages.about.description,
-    font,
+    fonts,
     path.join(OUTPUT_DIR, 'about.png')
   );
 
@@ -206,7 +212,7 @@ async function main() {
   await generateOgImage(
     messages.contact.title,
     messages.contact.description,
-    font,
+    fonts,
     path.join(OUTPUT_DIR, 'contact.png')
   );
 
@@ -214,7 +220,7 @@ async function main() {
   await generateOgImage(
     messages.privacy.title,
     messages.privacy.description,
-    font,
+    fonts,
     path.join(OUTPUT_DIR, 'privacy.png')
   );
 
@@ -224,7 +230,7 @@ async function main() {
     const year = releasedAt ? releasedAt.substring(0, 4) : '';
     const title = `${setName} | ${SITE_NAME}`;
     const desc = `${setName}（${year}年発売）の高額コモン・アンコモン・基本土地・トークン・FOILカードを一覧表示。`;
-    await generateOgImage(title, desc, font, path.join(OUTPUT_DIR, `set_${setCode}.png`));
+    await generateOgImage(title, desc, fonts, path.join(OUTPUT_DIR, `set_${setCode}.png`));
   }
 
   console.log('[og] All OG images generated successfully.');
