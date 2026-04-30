@@ -58,7 +58,7 @@ function filterCardsForSetPage(
   });
 }
 
-function groupByCategory(cards: SerializedCard[]): CardGroup[] {
+function groupByCategory(cards: SerializedCard[], setName: string): CardGroup[] {
   const basic: SerializedCard[] = [];
   const token: SerializedCard[] = [];
   const foil: SerializedCard[] = [];
@@ -80,11 +80,11 @@ function groupByCategory(cards: SerializedCard[]): CardGroup[] {
   }
 
   const groups: CardGroup[] = [];
-  if (common.length > 0) groups.push({ key: 'common', label: t('setPage.common'), cards: common });
-  if (uncommon.length > 0) groups.push({ key: 'uncommon', label: t('setPage.uncommon'), cards: uncommon });
-  if (basic.length > 0) groups.push({ key: 'basic', label: t('setPage.basicLand'), cards: basic });
-  if (token.length > 0) groups.push({ key: 'token', label: t('setPage.token'), cards: token });
-  if (foil.length > 0) groups.push({ key: 'foil', label: t('setPage.foil'), cards: foil });
+  if (common.length > 0) groups.push({ key: 'common', label: t('setPage.common', { setName }), cards: common });
+  if (uncommon.length > 0) groups.push({ key: 'uncommon', label: t('setPage.uncommon', { setName }), cards: uncommon });
+  if (basic.length > 0) groups.push({ key: 'basic', label: t('setPage.basicLand', { setName }), cards: basic });
+  if (token.length > 0) groups.push({ key: 'token', label: t('setPage.token', { setName }), cards: token });
+  if (foil.length > 0) groups.push({ key: 'foil', label: t('setPage.foil', { setName }), cards: foil });
 
   return groups;
 }
@@ -104,21 +104,11 @@ export default function SetPageCardList({ setName, setCode, releasedAt, cards }:
     () => filterCardsForSetPage(uniqueCards, thresholds),
     [uniqueCards, thresholds],
   );
-  const groups = useMemo(() => groupByCategory(filteredCards), [filteredCards]);
+  const groups = useMemo(() => groupByCategory(filteredCards, setName), [filteredCards, setName]);
   const year = releasedAt ? t('common.year', { year: releasedAt.substring(0, 4) }) : '';
 
   return (
     <>
-      <ThresholdBar
-        visibleKeys={['common', 'uncommon']}
-        thresholds={thresholds}
-        currency={currency}
-        shop={shop}
-        onThresholdChange={handleThresholdChange}
-        onCurrencyChange={setCurrency}
-        onShopChange={setShop}
-      />
-
       <div className="set-page-header">
         <div className="set-page-title-wrap">
           <SetSymbol setCode={setCode} />
@@ -128,6 +118,16 @@ export default function SetPageCardList({ setName, setCode, releasedAt, cards }:
           </h1>
         </div>
       </div>
+
+      <ThresholdBar
+        visibleKeys={['common', 'uncommon']}
+        thresholds={thresholds}
+        currency={currency}
+        shop={shop}
+        onThresholdChange={handleThresholdChange}
+        onCurrencyChange={setCurrency}
+        onShopChange={setShop}
+      />
 
       {groups.length === 0 ? (
         <p className="no-cards-message">{t('setPage.noCards')}</p>

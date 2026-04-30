@@ -92,11 +92,11 @@
   "setPage": {
     "title": "{setName} | 昭和MTG 高額コモン&アンコモン貴重品室",
     "description": "{setName}（{year}年発売）の高額コモン・アンコモン・基本土地・トークン・FOILカードを一覧表示。",
-    "common": "コモン",
-    "uncommon": "アンコモン",
-    "basicLand": "基本土地",
-    "token": "トークン",
-    "foil": "FOIL",
+    "common": "{setName} の高額コモン",
+    "uncommon": "{setName} の高額アンコモン",
+    "basicLand": "{setName} の高額基本土地",
+    "token": "{setName} の高額トークン",
+    "foil": "{setName} の高額FOIL",
     "noCards": "表示できるカードがありません。"
   },
   "thresholds": {
