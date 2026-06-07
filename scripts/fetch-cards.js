@@ -14,7 +14,7 @@ const { mkdir, writeFile } = require('node:fs/promises');
 const { parser } = require('stream-json');
 const { streamArray } = require('stream-json/streamers/StreamArray');
 
-const { isExcludedCard } = require('./shared');
+const { isExcludedCard, SCRYFALL_HEADERS } = require('./shared');
 
 // ---- Constants ----
 
@@ -111,12 +111,16 @@ function categorize(card, buckets) {
 
 async function main() {
   console.log('[fetch-cards] Fetching bulk data metadata...');
-  const metaRes = await fetch('https://api.scryfall.com/bulk-data/default-cards');
+  const metaRes = await fetch('https://api.scryfall.com/bulk-data/default-cards', {
+    headers: SCRYFALL_HEADERS,
+  });
   if (!metaRes.ok) throw new Error(`Metadata fetch failed: ${metaRes.status}`);
   const { download_uri } = await metaRes.json();
 
   console.log('[fetch-cards] Streaming bulk data...');
-  const dataRes = await fetch(download_uri);
+  const dataRes = await fetch(download_uri, {
+    headers: SCRYFALL_HEADERS,
+  });
   if (!dataRes.ok) throw new Error(`Bulk data fetch failed: ${dataRes.status}`);
 
   const nodeStream = Readable.fromWeb(dataRes.body);

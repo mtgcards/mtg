@@ -11,7 +11,7 @@
 const { existsSync } = require('node:fs');
 const { mkdir, writeFile } = require('node:fs/promises');
 
-const { EXCLUDED_SET_CODES, isExcludedSet } = require('./shared');
+const { EXCLUDED_SET_CODES, isExcludedSet, SCRYFALL_HEADERS } = require('./shared');
 
 const API_BASE = 'https://api.justtcg.com/v1';
 const API_KEY = process.env.JUSTTCG_API_KEY || '';
@@ -104,7 +104,7 @@ async function fetchCardsForSet(setId) {
 async function fetchScryfallImageByName(name) {
   try {
     const url = `https://api.scryfall.com/cards/named?exact=${encodeURIComponent(name)}`;
-    const res = await fetch(url);
+    const res = await fetch(url, { headers: SCRYFALL_HEADERS });
     if (!res.ok) return null;
     const data = await res.json();
     return data.id ? scryfallImageUrl(data.id) : null;

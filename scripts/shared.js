@@ -36,4 +36,16 @@ function isExcludedCard(card) {
   return isExcludedSet(card.set_name);
 }
 
-module.exports = { EXCLUDED_SET_CODES, EXCLUDED_SETS, EXCLUDED_PREFIXES, isExcludedSet, isExcludedCard };
+const SCRYFALL_HEADERS = {
+  'User-Agent': 'ShowaMTG/1.0 (https://mtg.syowa.workers.dev/)',
+  Accept: 'application/json',
+};
+
+module.exports = {
+  EXCLUDED_SET_CODES,
+  EXCLUDED_SETS,
+  EXCLUDED_PREFIXES,
+  isExcludedSet,
+  isExcludedCard,
+  SCRYFALL_HEADERS,
+};
